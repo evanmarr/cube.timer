@@ -1,0 +1,613 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cube Timer</title>
+<style>
+:root {
+  --bg:#10131b; --panel:#1a202c; --panel2:#222b39;
+  --text:#f1f4fa; --muted:#8995a8;
+  --accent:#70e1c1; --border:#303a4b; --red:#ff727b;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,sans-serif;
+}
+header {
+  padding:20px 5%;display:flex;justify-content:space-between;
+  align-items:center;border-bottom:1px solid var(--border);
+}
+.logo {font-weight:850;font-size:21px;letter-spacing:1px}
+.logo span {color:var(--accent)}
+button {
+  background:var(--panel2);color:var(--text);
+  border:1px solid var(--border);padding:10px 14px;
+  border-radius:9px;cursor:pointer;font:inherit;
+}
+button:hover {border-color:var(--accent)}
+main {max-width:1050px;margin:35px auto;padding:0 20px}
+h2 {font-size:17px;margin:0 0 18px}
+.card {
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:14px;padding:20px;margin-bottom:20px;
+}
+.scramble-label,.label {
+  color:var(--muted);font-size:11px;letter-spacing:2px;
+}
+#scramble {
+  font-size:clamp(16px,3vw,23px);font-weight:600;
+  line-height:1.8;margin-top:12px;word-spacing:5px;
+}
+.timer-area {text-align:center;padding:45px 5px;user-select:none}
+#timer {
+  font-size:clamp(80px,15vw,140px);font-weight:750;
+  letter-spacing:-6px;font-variant-numeric:tabular-nums;
+}
+.ready {color:var(--accent)}
+.running {color:var(--text)}
+.stopped {color:var(--accent)}
+#instruction {font-size:12px;color:var(--muted);letter-spacing:2px}
+.stats {
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:20px;
+}
+.stat {
+  background:var(--panel);border:1px solid var(--border);
+  padding:17px;border-radius:12px;
+}
+.stat .value {font-size:25px;font-weight:750;margin-top:9px}
+.records {
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.record {
+  background:var(--panel2);padding:16px;border-radius:10px;
+}
+.record .value {font-size:30px;font-weight:800;color:var(--accent);margin:8px 0}
+.record small {color:var(--muted)}
+.graph-wrap {height:270px;position:relative;width:100%}
+canvas {width:100%;height:100%}
+.graph-note {font-size:12px;color:var(--muted);margin-top:10px}
+.actions {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
+input {
+  background:var(--bg);border:1px solid var(--border);
+  color:var(--text);padding:11px;border-radius:8px;
+  width:100%;font:inherit;
+}
+.form-grid {display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label {display:block;color:var(--muted);font-size:12px;margin-bottom:7px}
+.form-buttons {display:flex;gap:10px;margin-top:15px}
+.primary {background:#245c50;border-color:#367d6c}
+.danger {color:var(--red)}
+.history-header {
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;
+}
+.solve {
+  display:grid;grid-template-columns:40px 1fr 100px auto;
+  align-items:center;gap:10px;padding:13px 8px;
+  border-top:1px solid var(--border);
+}
+.solve-time {font-weight:700;font-size:17px}
+.solve-date,.solve-number {font-size:12px;color:var(--muted)}
+.solve.best .solve-time {color:var(--accent)}
+.solve-actions {display:flex;gap:5px}
+.solve-actions button {padding:6px 9px}
+.empty {text-align:center;color:var(--muted);padding:30px}
+.hidden {display:none}
+footer {text-align:center;color:var(--muted);padding:30px;font-size:12px}
+@media(max-width:650px) {
+  .stats {grid-template-columns:1fr 1fr}
+  .solve {grid-template-columns:25px 1fr auto}
+  .solve-date {display:none}
+  .records {grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">CUBE<span>.</span>TIMER</div>
+  <div class="actions">
+    <button onclick="newScramble()">↻ Scramble</button>
+    <button onclick="exportData()">↓ Export</button>
+  </div>
+</header>
+
+<main>
+
+<section class="card">
+  <div class="scramble-label">3 × 3 × 3 SCRAMBLE</div>
+  <div id="scramble"></div>
+</section>
+
+<section class="timer-area" id="timerArea">
+  <div id="timer" class="stopped">0.00</div>
+  <p id="instruction">HOLD SPACE, THEN RELEASE TO START</p>
+</section>
+
+<section class="stats">
+  <div class="stat">
+    <div class="label">SOLVES</div>
+    <div class="value" id="count">0</div>
+  </div>
+  <div class="stat">
+    <div class="label">PERSONAL BEST</div>
+    <div class="value" id="best">--</div>
+  </div>
+  <div class="stat">
+    <div class="label">AVERAGE OF 5</div>
+    <div class="value" id="ao5">--</div>
+  </div>
+  <div class="stat">
+    <div class="label">AVERAGE OF 12</div>
+    <div class="value" id="ao12">--</div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>World Records · 3×3</h2>
+  <div class="records">
+    <div class="record">
+      <div class="label">WORLD RECORD SINGLE</div>
+      <div class="value">2.51s</div>
+      <small>Xuanyi Geng · October 2026</small>
+    </div>
+    <div class="record">
+      <div class="label">WORLD RECORD AVERAGE</div>
+      <div class="value">3.51s</div>
+      <small>Yiheng Wang · June 2026</small>
+    </div>
+  </div>
+  <p class="graph-note">Benchmarks based on WCA competition records. Last checked October 31, 2026. Verify current records before competitions.</p>
+</section>
+
+<section class="card">
+  <h2>Solve Progress</h2>
+  <div class="graph-wrap">
+    <canvas id="graph"></canvas>
+  </div>
+  <div class="graph-note">
+    Each point represents a solve. Lower is faster.
+  </div>
+</section>
+
+<section class="card">
+  <h2 id="formTitle">Add a Solve</h2>
+  <div class="form-grid">
+    <div class="field">
+      <label for="manualTime">Solve time (seconds)</label>
+      <input id="manualTime" type="number" min="0.01"
+        step="0.01" placeholder="e.g. 24.63">
+    </div>
+    <div class="field">
+      <label for="manualDate">Date and time</label>
+      <input id="manualDate" type="datetime-local">
+    </div>
+  </div>
+  <div class="form-buttons">
+    <button class="primary" onclick="saveManual()">Save Solve</button>
+    <button id="cancelEdit" class="hidden" onclick="cancelEdit()">Cancel</button>
+  </div>
+</section>
+
+<section class="card">
+  <div class="history-header">
+    <h2>Session History</h2>
+    <button onclick="clearHistory()" class="danger">Clear All</button>
+  </div>
+  <div id="history"></div>
+</section>
+
+</main>
+
+<footer>CUBE.TIMER · Your cubing progress, measured.</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let solves = [];
+let state = "idle";
+let startTime = 0;
+let elapsed = 0;
+let holdTimeout = null;
+let ready = false;
+let spaceDown = false;
+let editId = null;
+
+const STORAGE_KEY = "cubeSolves";
+
+try {
+  solves = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  if (!Array.isArray(solves)) solves = [];
+  solves = solves.filter(s =>
+    Number.isFinite(s.time) &&
+    s.time > 0 &&
+    typeof s.date === "string"
+  );
+} catch { solves = []; }
+
+function save() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(solves));
+  } catch {
+    alert("Could not save data. Export your solves as a backup.");
+  }
+}
+
+function formatTime(ms) {
+  let seconds = ms / 1000;
+  if (seconds < 60) return seconds.toFixed(2);
+  return Math.floor(seconds/60) + ":" +
+    (seconds%60).toFixed(2).padStart(5,"0");
+}
+
+// Scramble generation
+const faces = ["R","L","U","D","F","B"];
+const modifiers = ["","'","2"];
+
+function newScramble() {
+  let moves = [];
+  let previous = "";
+
+  while (moves.length < 20) {
+    let face = faces[Math.floor(Math.random()*6)];
+    if (face === previous) continue;
+
+    moves.push(face + modifiers[Math.floor(Math.random()*3)]);
+    previous = face;
+  }
+
+  $("scramble").textContent = moves.join(" ");
+}
+
+// Timer
+function holdStart() {
+  if (state !== "idle" || spaceDown) return;
+  spaceDown = true;
+  ready = false;
+
+  holdTimeout = setTimeout(() => {
+    if (!spaceDown || state !== "idle") return;
+    ready = true;
+    $("timer").className = "ready";
+    $("instruction").textContent = "RELEASE TO START";
+  },300);
+}
+
+function releaseStart() {
+  if (!spaceDown || state !== "idle") return;
+  spaceDown = false;
+  clearTimeout(holdTimeout);
+
+  if (!ready) return;
+
+  state = "running";
+  startTime = performance.now();
+
+  $("timer").className = "running";
+  $("instruction").textContent = "PRESS SPACE TO STOP";
+  requestAnimationFrame(updateTimer);
+}
+
+function updateTimer() {
+  if (state !== "running") return;
+  elapsed = performance.now()-startTime;
+  $("timer").textContent = formatTime(elapsed);
+  requestAnimationFrame(updateTimer);
+}
+
+function stopTimer() {
+  if (state !== "running") return;
+
+  elapsed = performance.now()-startTime;
+  state = "idle";
+
+  $("timer").textContent = formatTime(elapsed);
+  $("timer").className = "stopped";
+  $("instruction").textContent = "HOLD SPACE TO START AGAIN";
+
+  solves.unshift({
+    id: crypto.randomUUID(),
+    time: elapsed,
+    date: new Date().toISOString()
+  });
+
+  save();
+  render();
+  newScramble();
+}
+
+document.addEventListener("keydown", e => {
+  if (e.code !== "Space" || e.repeat) return;
+  e.preventDefault();
+
+  if (state === "running") stopTimer();
+  else holdStart();
+});
+
+document.addEventListener("keyup", e => {
+  if (e.code !== "Space") return;
+  e.preventDefault();
+  releaseStart();
+});
+
+window.addEventListener("blur", () => {
+  if (!spaceDown) return;
+  spaceDown = false;
+  clearTimeout(holdTimeout);
+  ready = false;
+  $("timer").className = "stopped";
+  $("instruction").textContent = "HOLD SPACE TO START";
+});
+
+$("timerArea").addEventListener("pointerdown", e => {
+  if (e.button !== undefined && e.button !== 0) return;
+  e.preventDefault();
+
+  if (state === "running") stopTimer();
+  else holdStart();
+});
+
+$("timerArea").addEventListener("pointerup", releaseStart);
+
+$("timerArea").addEventListener("pointercancel", () => {
+  spaceDown = false;
+  clearTimeout(holdTimeout);
+  ready = false;
+});
+
+// Statistics
+function average(n) {
+  if (solves.length < n) return "--";
+
+  let values = solves.slice(0,n).map(s=>s.time).sort((a,b)=>a-b);
+  values.shift();
+  values.pop();
+
+  return formatTime(values.reduce((a,b)=>a+b,0)/values.length);
+}
+
+function render() {
+  $("count").textContent = solves.length;
+
+  const best = solves.length
+    ? Math.min(...solves.map(s=>s.time)) : null;
+
+  $("best").textContent = best === null ? "--" : formatTime(best);
+  $("ao5").textContent = average(5);
+  $("ao12").textContent = average(12);
+
+  const history = $("history");
+  history.replaceChildren();
+
+  if (!solves.length) {
+    history.innerHTML = '<div class="empty">No solves yet. Start cubing!</div>';
+  } else {
+    solves.forEach((s,i) => {
+      const row = document.createElement("div");
+      row.className = "solve";
+      if (s.time === best) row.classList.add("best");
+
+      const number = document.createElement("span");
+      number.className = "solve-number";
+      number.textContent = solves.length-i;
+
+      const time = document.createElement("span");
+      time.className = "solve-time";
+      time.textContent = formatTime(s.time);
+
+      const date = document.createElement("span");
+      date.className = "solve-date";
+      date.textContent = new Date(s.date).toLocaleString();
+
+      const actions = document.createElement("div");
+      actions.className = "solve-actions";
+
+      const edit = document.createElement("button");
+      edit.textContent = "Edit";
+      edit.onclick = () => editSolve(s.id);
+
+      const del = document.createElement("button");
+      del.textContent = "×";
+      del.className = "danger";
+      del.onclick = () => deleteSolve(s.id);
+
+      actions.append(edit,del);
+      row.append(number,time,date,actions);
+      history.appendChild(row);
+    });
+  }
+
+  drawGraph();
+}
+
+// Manual entry and editing
+function saveManual() {
+  const value = Number($("manualTime").value);
+  const dateValue = $("manualDate").value;
+
+  if (!Number.isFinite(value) || value <= 0) {
+    alert("Enter a valid solve time.");
+    return;
+  }
+
+  const date = dateValue
+    ? new Date(dateValue)
+    : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    alert("Enter a valid date.");
+    return;
+  }
+
+  if (editId) {
+    const solve = solves.find(s=>s.id===editId);
+    if (solve) {
+      solve.time = value*1000;
+      solve.date = date.toISOString();
+    }
+  } else {
+    solves.unshift({
+      id: crypto.randomUUID(),
+      time: value*1000,
+      date: date.toISOString()
+    });
+  }
+
+  save();
+  cancelEdit();
+  render();
+}
+
+function editSolve(id) {
+  const s = solves.find(s=>s.id===id);
+  if (!s) return;
+
+  editId = id;
+  $("manualTime").value = (s.time/1000).toFixed(2);
+
+  const d = new Date(s.date);
+  $("manualDate").value =
+    new Date(d.getTime()-d.getTimezoneOffset()*60000)
+      .toISOString().slice(0,16);
+
+  $("formTitle").textContent = "Edit Solve";
+  $("cancelEdit").classList.remove("hidden");
+  $("manualTime").focus();
+}
+
+function cancelEdit() {
+  editId = null;
+  $("manualTime").value = "";
+  $("manualDate").value = "";
+  $("formTitle").textContent = "Add a Solve";
+  $("cancelEdit").classList.add("hidden");
+}
+
+function deleteSolve(id) {
+  if (!confirm("Delete this solve?")) return;
+  solves = solves.filter(s=>s.id!==id);
+  if (editId===id) cancelEdit();
+  save();
+  render();
+}
+
+function clearHistory() {
+  if (!confirm("Permanently clear all saved solves?")) return;
+  solves = [];
+  cancelEdit();
+  save();
+  render();
+}
+
+function exportData() {
+  const blob = new Blob(
+    [JSON.stringify(solves,null,2)],
+    {type:"application/json"}
+  );
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cube-solves.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// Graph
+function drawGraph() {
+  const canvas = $("graph");
+  const ctx = canvas.getContext("2d");
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width*dpr;
+  canvas.height = rect.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  const w = rect.width;
+  const h = rect.height;
+  ctx.clearRect(0,0,w,h);
+
+  const left=48, right=12, top=15, bottom=30;
+  const gw=w-left-right, gh=h-top-bottom;
+
+  const values = solves.map(s=>s.time/1000).reverse();
+
+  if (!values.length) {
+    ctx.fillStyle="#8995a8";
+    ctx.textAlign="center";
+    ctx.font="14px system-ui";
+    ctx.fillText("Your solve graph will appear here",w/2,h/2);
+    return;
+  }
+
+  const max = Math.max(10,Math.ceil(Math.max(...values)/5)*5);
+  const min = 0;
+
+  // Grid
+  ctx.font="11px system-ui";
+  ctx.textAlign="right";
+  ctx.fillStyle="#8995a8";
+
+  for (let i=0;i<=4;i++) {
+    const y=top+gh*i/4;
+    const val=max-(max-min)*i/4;
+    ctx.strokeStyle="#303a4b";
+    ctx.beginPath();
+    ctx.moveTo(left,y);
+    ctx.lineTo(w-right,y);
+    ctx.stroke();
+    ctx.fillText(val.toFixed(0)+"s",left-9,y+4);
+  }
+
+  // World record single reference line
+  const wrY=top+gh*(1-2.51/max);
+  ctx.strokeStyle="#e6bd69";
+  ctx.setLineDash([5,5]);
+  ctx.beginPath();
+  ctx.moveTo(left,wrY);
+  ctx.lineTo(w-right,wrY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Solve line
+  const points=values.map((v,i)=>({
+    x: values.length===1 ? left+gw/2 : left+gw*i/(values.length-1),
+    y: top+gh*(1-v/max)
+  }));
+
+  if (points.length>1) {
+    ctx.beginPath();
+    ctx.strokeStyle="#70e1c1";
+    ctx.lineWidth=2;
+    points.forEach((p,i)=>{
+      if(i===0) ctx.moveTo(p.x,p.y);
+      else ctx.lineTo(p.x,p.y);
+    });
+    ctx.stroke();
+  }
+
+  points.forEach(p=>{
+    ctx.beginPath();
+    ctx.fillStyle="#70e1c1";
+    ctx.arc(p.x,p.y,3.5,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  ctx.textAlign="center";
+  ctx.fillStyle="#8995a8";
+  ctx.fillText("Oldest",left,h-7);
+  ctx.fillText("Newest",w-right,h-7);
+}
+
+window.addEventListener("resize",drawGraph);
+
+newScramble();
+render();
+</script>
+</body>
+</html>
