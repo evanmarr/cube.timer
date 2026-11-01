@@ -96,6 +96,25 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   header{padding:16px}
   header .label{display:none}
 }
+
+:root[data-theme="light"] {
+  --bg:#f3f5f9; --panel:#ffffff; --panel2:#e8edf4;
+  --text:#182231; --muted:#647187; --accent:#087f68;
+  --gold:#a66b00; --border:#ccd4df; --red:#c43f49;
+}
+:root[data-theme="light"] select option {background:#fff;color:#182231}
+:root[data-theme="light"] #cube-stage {background:radial-gradient(ellipse,#e1e8f1,#cbd5e2 70%)}
+:root[data-theme="light"] .case-image {background:#e8edf4}
+#timer {user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#timer.ready {color:var(--accent)}
+.timer-card.minimal #scramble,
+.timer-card.minimal #timer-label,
+.timer-card.minimal > .label,
+.timer-card.minimal > p {display:none}
+.timer-card.minimal {padding:12px 20px}
+.timer-card.statistics-focused {padding-bottom:14px}
+#practice-goal-card progress {width:100%;height:18px;accent-color:var(--accent)}
+@media(max-width:600px){button,select{min-height:44px}.controls button{flex:1 1 auto}}
 </style>
 </head>
 <body>
@@ -128,6 +147,12 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
       <button id="manual-add">Add Solve</button>
     </div>
     <p class="muted">Hold SPACE to prepare. Release to start. Press SPACE again to stop.</p>
+  </div>
+  <div class="card" id="practice-goal-card">
+    <h2>Daily Practice Goal</h2>
+    <div id="goal-progress-text">0 / 20 solves</div>
+    <progress id="goal-progress" value="0" max="20"></progress>
+    <p class="muted" id="goal-remaining">20 solves remaining today</p>
   </div>
   <div class="card">
     <h2>Session Statistics</h2>
@@ -304,6 +329,22 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
         <option value="2">Hundredths</option>
         <option value="3">Thousandths</option>
       </select>
+    </div>
+    <div class="setting-row">
+      <div><strong>Theme</strong><div class="muted">Choose your appearance.</div></div>
+      <select id="setting-theme"><option value="dark">Dark</option><option value="light">Light</option></select>
+    </div>
+    <div class="setting-row">
+      <div><strong>Timer layout</strong><div class="muted">Choose the timer display.</div></div>
+      <select id="setting-layout">
+        <option value="standard">Standard</option>
+        <option value="minimal">Minimal</option>
+        <option value="statistics">Statistics focused</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <div><strong>Daily solve goal</strong><div class="muted">Solves to complete each day. Set 0 to disable.</div></div>
+      <input id="setting-daily-goal" type="number" min="0" max="1000" value="20" style="width:90px">
     </div>
     <p class="muted">Settings are stored in this browser.</p>
   </div>
