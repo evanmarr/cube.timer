@@ -26,6 +26,10 @@ select{
   background-repeat:no-repeat;background-position:right 13px center
 }
 select option{background:#191f2c;color:var(--text)}
+input[type="checkbox"]{appearance:none;width:42px;height:24px;min-width:42px;padding:0;border:1px solid var(--border);border-radius:999px;background:#394456;position:relative;cursor:pointer;transition:.2s}
+input[type="checkbox"]::after{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;border-radius:50%;background:white;transition:.2s}
+input[type="checkbox"]:checked{background:var(--accent);border-color:var(--accent)}
+input[type="checkbox"]:checked::after{left:20px;background:#10201d}
 input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0}
 textarea{width:100%;resize:vertical;min-height:85px}
 header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border);gap:12px}
@@ -138,13 +142,13 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   <div class="card timer-card">
     <div class="label">3×3 SPEED TIMER</div>
     <div id="timer">0.00</div>
-    <div id="timer-label" class="muted">Hold SPACE, then release to start</div>
+    <div id="timer-label" class="muted">Press SPACE to inspect, hold to prepare, release to start</div>
     <div id="scramble" class="scramble"></div>
     <div class="controls">
       <button id="new-scramble">New Scramble</button>
       <button id="manual-add">Add Solve</button>
     </div>
-    <p class="muted">Hold SPACE to prepare. Release to start. Press SPACE again to stop.</p>
+    <p class="muted">Press SPACE for 15-second inspection. Hold SPACE to prepare, then release to start. Press SPACE to stop.</p>
   </div>
   <div class="card" id="practice-goal-card">
     <h2>Daily Practice Goal</h2>
@@ -175,6 +179,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   </div>
   <div class="card"><h2>Solve Distribution</h2><div class="graph-wrap"><canvas class="graph" id="distributionGraph"></canvas></div></div>
   <div class="card"><h2>Practice Calendar</h2><div id="calendar"></div></div>
+  <div class="card"><h2>Achievements</h2><div id="achievements" class="stats"></div></div>
   <div class="card"><h2>Solve Progress</h2><div class="graph-wrap"><canvas class="graph" id="graph"></canvas></div></div>
 </section>
 
@@ -266,10 +271,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
         <option value="2">2×2</option>
         <option value="4">4×4</option>
         <option value="5">5×5</option>
-        <option value="6">6×6</option><option value="7">7×7</option>
-        <option value="8">8×8</option><option value="9">9×9</option>
-        <option value="pyraminx">Pyraminx</option>
-        <option value="megaminx">Megaminx</option>
+        <option value="6">6×6</option><option value="7">7×7</option><option value="8">8×8</option><option value="9">9×9</option>
       </select>
     </div>
     <div class="setting-row">
@@ -282,11 +284,11 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
     </div>
     <div class="setting-row">
       <div><strong>Timer inspection</strong><div class="muted">Enable a 15-second inspection period.</div></div>
-      <input class="custom-check" type="checkbox" id="setting-inspection">
+      <input type="checkbox" id="setting-inspection">
     </div>
     <div class="setting-row">
       <div><strong>Confetti on personal best</strong><div class="muted">Celebrate a new best single.</div></div>
-      <input class="custom-check" type="checkbox" id="setting-confetti" checked>
+      <input type="checkbox" id="setting-confetti" checked>
     </div>
     <div class="setting-row">
       <div><strong>Timer precision</strong><div class="muted">Choose the displayed decimal precision.</div></div>
@@ -311,21 +313,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
       <div><strong>Daily solve goal</strong><div class="muted">Solves to complete each day. Set 0 to disable.</div></div>
       <input id="setting-daily-goal" type="number" min="0" max="1000" value="20" style="width:90px">
     </div>
-    <div class="card" style="margin-top:18px;background:var(--panel2)">
-      <h2>Achievements</h2><div id="achievements" class="stats"></div>
-    </div>
     <p class="muted">Settings are stored in this browser.</p>
   </div>
 </section>
 </main>
-
-<div id="app-dialog" class="dialog-backdrop" hidden>
-  <section class="dialog-box" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
-    <h2 id="dialog-title">Cube.Timer</h2><p id="dialog-message"></p>
-    <input id="dialog-input" type="text" hidden>
-    <div class="dialog-actions"><button id="dialog-cancel" type="button">Cancel</button><button id="dialog-ok" type="button">OK</button></div>
-  </section>
-</div>
 
 <footer>Cube.Timer · Your solves are saved in this browser.</footer>
 <script src="script.js"></script>
