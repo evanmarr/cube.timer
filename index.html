@@ -70,11 +70,14 @@ canvas.graph{width:100%;height:100%;display:block}
 .move-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
 .move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace}
 .move-chip.current{outline:1px solid var(--accent);color:var(--accent)}
-.trainer-layout{display:grid;grid-template-columns:minmax(200px,.8fr) minmax(250px,1.2fr);gap:20px;align-items:center}
+.trainer-layout{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(270px,1.2fr);gap:20px;align-items:center}
 .case-image{background:#111722;border:1px solid var(--border);border-radius:13px;min-height:230px;display:grid;place-items:center;padding:15px}
-.case-image svg{width:min(100%,280px);height:auto}
+.case-image svg{width:min(100%,320px);height:auto;display:block}
 .algorithm{font-family:monospace;font-size:19px;line-height:1.8;color:var(--accent);overflow-wrap:anywhere}
-.case-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.algorithm-block{margin-top:14px;padding:10px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:10px}
+.case-meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.meta-pill{background:var(--panel2);border:1px solid var(--border);color:var(--muted);padding:5px 8px;border-radius:999px;font-size:11px}
+.case-recognition{margin-top:8px;line-height:1.6;color:var(--text)}
 .field{display:grid;gap:7px;margin:12px 0;min-width:0}
 .field label{color:var(--muted);font-size:12px}
 .field input,.field select{width:100%}
@@ -236,29 +239,47 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
 <section class="page" id="trainer-page">
   <div class="card">
     <h2>Algorithm Trainer</h2>
-    <p class="muted">Study a case, recognize its pattern, and practice its algorithm.</p>
-    <div class="controls">
+    <p class="muted">Study a case, recognize the pattern, and practice the solution algorithm.</p>
+    <div class="controls" style="justify-content:flex-start; margin-top:0;">
       <label class="label" for="trainer-category">Category</label>
       <select id="trainer-category">
         <option value="OLL">OLL</option>
         <option value="PLL">PLL</option>
         <option value="F2L">F2L</option>
       </select>
-      <label class="label" for="trainer-case">Case</label>
-      <select id="trainer-case"></select>
+      <label class="label" for="trainer-group">Group</label>
+      <select id="trainer-group">
+        <option value="all">All groups</option>
+      </select>
+      <input id="trainer-search" type="search" placeholder="Search by name, number, or algorithm" aria-label="Search trainer cases" style="min-width:220px; flex:1; max-width:420px;">
     </div>
-    <div class="trainer-layout" style="margin-top:20px">
+    <div class="controls" style="justify-content:flex-start; margin-top:12px;">
+      <button id="prev-case">Previous</button>
+      <button id="next-case">Next</button>
+      <button id="random-case">Random</button>
+      <button id="show-algorithm">Show algorithm</button>
+      <button id="practice-case">Send to simulator</button>
+    </div>
+    <div class="trainer-layout" style="margin-top:22px">
       <div class="case-image" id="case-image"></div>
       <div>
         <h2 id="case-title">OLL Case</h2>
+        <div class="case-meta">
+          <span class="meta-pill" id="case-number">Case #</span>
+          <span class="meta-pill" id="case-group">Group</span>
+          <span class="meta-pill" id="case-probability">Probability</span>
+        </div>
         <p id="case-description" class="muted"></p>
-        <div class="algorithm" id="case-algorithm"></div>
-        <div class="controls">
-          <button id="show-algorithm">Show Algorithm</button>
-          <button id="next-case">Next Case</button>
-          <button id="practice-case">Send to Simulator</button>
+        <p id="case-recognition" class="case-recognition"></p>
+        <div class="algorithm-block">
+          <div class="label">Solution</div>
+          <div class="algorithm" id="case-algorithm">Algorithm hidden</div>
         </div>
         <p class="muted" id="trainer-note">Try to recognize the pattern before revealing the algorithm.</p>
+        <div class="field" style="margin-top:12px;">
+          <label for="trainer-case">Browse cases</label>
+          <select id="trainer-case"></select>
+        </div>
       </div>
     </div>
     <p class="muted">
