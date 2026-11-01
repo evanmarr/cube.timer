@@ -1,140 +1,226 @@
-/* Simulator and trainer */
-.sim-layout {
-  display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(260px, 1fr);
-  gap: 18px;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cube.Timer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+  --bg:#10141d; --panel:#191f2c; --panel2:#222b3a;
+  --text:#edf2fa; --muted:#8995a8; --accent:#70e1c1;
+  --gold:#e6bd69; --border:#303a4b; --red:#e77979;
 }
-
-#cube-view {
-  width: 100%;
-  height: 390px;
-  display: block;
-  border-radius: 12px;
-  background: #111722;
-  overflow: hidden;
-  touch-action: none;
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
+button,input,select{font:inherit}
+button,select{
+  cursor:pointer;border:1px solid var(--border);background:var(--panel2);
+  color:var(--text);padding:10px 14px;border-radius:10px;transition:.18s
 }
-
-.sim-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
+button:hover,select:hover{border-color:var(--accent);transform:translateY(-1px)}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+select{appearance:none;padding-right:38px;background-image:
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center}
+select option{background:#191f2c;color:var(--text)}
+input{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border)}
+header h1{margin:0;font-size:23px;letter-spacing:-1px}
+header span{color:var(--accent)}
+main{max-width:1200px;margin:auto;padding:24px 20px 60px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tab{background:transparent;color:var(--muted)}
+.tab.active{background:var(--panel2);color:var(--accent);border-color:var(--accent)}
+.page{display:none}.page.active{display:block}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px;min-width:0}
+.card h2{font-size:17px;margin:0 0 17px}
+.timer-card{text-align:center;padding:30px 20px}
+#timer{font-size:clamp(65px,12vw,110px);font-weight:800;letter-spacing:-5px;font-variant-numeric:tabular-nums;margin:20px 0}
+#timer.ready{color:var(--accent)}#timer.running{color:var(--gold)}
+.label,.muted{color:var(--muted);font-size:12px}
+.scramble{font-size:clamp(16px,3vw,23px);line-height:1.8;letter-spacing:2px;margin:18px auto;max-width:850px;overflow-wrap:anywhere}
+.controls,.form-row{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin-top:15px}
+.stats,.records{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stat,.record-item{background:var(--panel2);padding:15px;border-radius:11px;min-width:0}
+.value{font-size:24px;font-weight:750;margin-top:6px;font-variant-numeric:tabular-nums}
+.record-item .value{color:var(--accent)}
+.graph-wrap{height:260px;position:relative;width:100%}
+canvas.graph{width:100%;height:100%;display:block}
+.solve-list{display:flex;flex-direction:column;gap:8px}
+.solve{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:12px;background:var(--panel2);padding:12px;border-radius:10px}
+.solve-time{font-size:17px;font-weight:700}.solve-date{font-size:11px;color:var(--muted)}
+.solve-actions{display:flex;gap:5px}.solve-actions button{padding:6px 9px;font-size:12px}
+.calendar-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-top:15px}
+.calendar-day{aspect-ratio:1;border-radius:4px;background:#252d3b}
+.calendar-day[data-level="1"]{background:#315b53}.calendar-day[data-level="2"]{background:#368875}
+.calendar-day[data-level="3"]{background:#48b69a}.calendar-day[data-level="4"]{background:#70e1c1}
+.calendar-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:9px}
+.empty{color:var(--muted);text-align:center;padding:25px}
+.danger{color:var(--red)}
+.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.sim-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(220px,.7fr);gap:18px}
+#cube-stage{height:390px;min-width:0;background:radial-gradient(ellipse,#263347,#121925 70%);border:1px solid var(--border);border-radius:13px;overflow:hidden;touch-action:none}
+#cube-stage canvas{display:block;width:100%;height:100%}
+.move-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace}
+.move-chip.current{outline:1px solid var(--accent);color:var(--accent)}
+.trainer-layout{display:grid;grid-template-columns:minmax(200px,.8fr) minmax(250px,1.2fr);gap:20px;align-items:center}
+.case-image{background:#111722;border:1px solid var(--border);border-radius:13px;min-height:230px;display:grid;place-items:center;padding:15px}
+.case-image svg{width:min(100%,240px);height:auto}
+.algorithm{font-family:monospace;font-size:19px;line-height:1.8;color:var(--accent);overflow-wrap:anywhere}
+.case-buttons{display:flex;gap:8px;flex-wrap:wrap}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+@media(max-width:760px){.two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}#cube-stage{height:320px}}
+@media(max-width:520px){
+  main{padding:14px 11px 40px}.card{padding:15px}
+  .solve{grid-template-columns:28px 1fr}.solve-actions{grid-column:2}
+  .calendar-grid{gap:3px}header{padding:16px}
 }
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<header>
+  <h1>Cube.<span>Timer</span></h1>
+  <div class="label">Your personal speedcubing workspace</div>
+</header>
 
-.sim-controls button {
-  min-width: 42px;
-}
+<main>
+<nav class="tabs">
+  <button class="tab active" data-page="timer-page">Timer</button>
+  <button class="tab" data-page="stats-page">Statistics</button>
+  <button class="tab" data-page="history-page">History</button>
+  <button class="tab" data-page="records-page">Records</button>
+  <button class="tab" data-page="sim-page">3D Simulator</button>
+  <button class="tab" data-page="trainer-page">Algorithm Trainer</button>
+</nav>
 
-.sim-input {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-}
+<section class="page active" id="timer-page">
+  <div class="card timer-card">
+    <div class="label">3×3 SPEED TIMER</div>
+    <div id="timer">0.00</div>
+    <div id="timer-label" class="muted">Hold SPACE, then release to start</div>
+    <div id="scramble" class="scramble"></div>
+    <div class="controls">
+      <button id="new-scramble">New Scramble</button>
+      <button id="manual-add">Add Solve</button>
+    </div>
+    <p class="muted">Hold SPACE to prepare. Release to start. Press SPACE again to stop.</p>
+  </div>
+  <div class="card">
+    <h2>Session Statistics</h2>
+    <div class="stats">
+      <div class="stat"><div class="label">Solves</div><div class="value" id="solve-count">0</div></div>
+      <div class="stat"><div class="label">Best Single</div><div class="value" id="best-single">--</div></div>
+      <div class="stat"><div class="label">Ao5</div><div class="value" id="ao5">--</div></div>
+      <div class="stat"><div class="label">Ao12</div><div class="value" id="ao12">--</div></div>
+    </div>
+  </div>
+</section>
 
-.sim-input input {
-  flex: 1;
-  min-width: 0;
-}
+<section class="page" id="stats-page">
+  <div class="card">
+    <h2>Advanced Analytics</h2>
+    <div class="stats">
+      <div class="stat"><div class="label">Ao50</div><div class="value" id="ao50">--</div></div>
+      <div class="stat"><div class="label">Ao100</div><div class="value" id="ao100">--</div></div>
+    </div>
+    <div class="graph-wrap"><canvas class="graph" id="trendGraph"></canvas></div>
+    <p class="muted">Rolling Ao5 and Ao12.</p>
+  </div>
+  <div class="card"><h2>Solve Distribution</h2><div class="graph-wrap"><canvas class="graph" id="distributionGraph"></canvas></div></div>
+  <div class="card"><h2>Practice Calendar</h2><div id="calendar"></div></div>
+  <div class="card"><h2>Solve Progress</h2><div class="graph-wrap"><canvas class="graph" id="graph"></canvas></div></div>
+</section>
 
-.case-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-  gap: 12px;
-}
+<section class="page" id="history-page">
+  <div class="card">
+    <h2>Solve History</h2>
+    <div class="controls">
+      <button id="manual-add-history">Add Solve</button>
+      <button id="export-data">Export Data</button>
+      <button id="import-data">Import Data</button>
+      <button class="danger" id="clear-solves">Clear All</button>
+      <input type="file" id="import-file" accept=".json" hidden>
+    </div>
+    <p class="muted">Edit or delete individual solves.</p>
+    <div class="solve-list" id="solve-list"></div>
+  </div>
+</section>
 
-.case-card {
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px;
-  cursor: pointer;
-}
+<section class="page" id="records-page">
+  <div class="card"><h2>Personal Records</h2><div class="records" id="personalRecords"></div></div>
+  <div class="card">
+    <h2>World Records</h2>
+    <p>Official 3×3 records are maintained by the World Cube Association.</p>
+    <a href="https://www.worldcubeassociation.org/results/records" target="_blank" rel="noopener">View WCA records</a>
+  </div>
+</section>
 
-.case-card:hover,
-.case-card.selected {
-  border-color: var(--accent);
-}
+<section class="page" id="sim-page">
+  <div class="card">
+    <h2>3D Cube Simulator</h2>
+    <p class="muted">Drag the cube to rotate your view. Select a move to animate it.</p>
+    <div class="sim-layout">
+      <div>
+        <div id="cube-stage" aria-label="Interactive 3D Rubik's Cube"></div>
+        <div class="controls">
+          <button id="sim-reset">Reset Cube</button>
+          <button id="sim-scramble">Scramble Cube</button>
+        </div>
+      </div>
+      <div>
+        <label class="label" for="move-select">Choose a move</label>
+        <select id="move-select">
+          <option>R</option><option>R'</option><option>R2</option>
+          <option>L</option><option>L'</option><option>L2</option>
+          <option>U</option><option>U'</option><option>U2</option>
+          <option>D</option><option>D'</option><option>D2</option>
+          <option>F</option><option>F'</option><option>F2</option>
+          <option>B</option><option>B'</option><option>B2</option>
+        </select>
+        <div class="controls"><button id="sim-turn">Animate Move</button></div>
+        <h3>Move sequence</h3>
+        <div class="move-list" id="sim-moves"></div>
+        <button id="sim-undo" style="margin-top:12px">Undo last move</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-.case-card strong {
-  display: block;
-  margin-bottom: 7px;
-}
-
-.case-card code {
-  color: var(--accent);
-  font-size: 12px;
-  overflow-wrap: anywhere;
-}
-
-.case-diagram {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  width: 90px;
-  margin: 8px auto;
-}
-
-.case-sticker {
-  height: 25px;
-  border-radius: 3px;
-  position: relative;
-  background: #e9e9e9;
-  border: 1px solid #222;
-}
-
-.case-sticker::before,
-.case-sticker::after {
-  content: "";
-  position: absolute;
-  background: #aaa;
-}
-
-.case-sticker::before {
-  height: 4px;
-  top: 0;
-  left: 2px;
-  right: 2px;
-}
-
-.case-sticker::after {
-  width: 4px;
-  right: 0;
-  top: 2px;
-  bottom: 2px;
-}
-
-.case-sticker.yellow { background: #f4d83d; }
-.case-sticker.white { background: #f4f4f4; }
-.case-sticker.gray { background: #777; }
-
-.setting-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.setting-row select {
-  background: var(--panel2);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 9px;
-}
-
-#algorithm-input {
-  width: 100%;
-}
-
-@media(max-width: 750px) {
-  .sim-layout {
-    grid-template-columns: 1fr;
-  }
-
-  #cube-view {
-    height: 310px;
-  }
-}
+<section class="page" id="trainer-page">
+  <div class="card">
+    <h2>Algorithm Trainer</h2>
+    <p class="muted">Study a case, identify its pattern, and practice its algorithm.</p>
+    <div class="controls">
+      <label class="label" for="trainer-category">Category</label>
+      <select id="trainer-category">
+        <option value="OLL">OLL</option>
+        <option value="PLL">PLL</option>
+        <option value="F2L">F2L</option>
+      </select>
+      <label class="label" for="trainer-case">Case</label>
+      <select id="trainer-case"></select>
+    </div>
+    <div class="trainer-layout" style="margin-top:20px">
+      <div class="case-image" id="case-image"></div>
+      <div>
+        <h2 id="case-title">OLL Case</h2>
+        <p id="case-description" class="muted"></p>
+        <div class="algorithm" id="case-algorithm"></div>
+        <div class="controls">
+          <button id="show-algorithm">Show Algorithm</button>
+          <button id="next-case">Next Case</button>
+        </div>
+        <p class="muted" id="trainer-note">Use the diagram as a visual recognition aid.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer>Cube.Timer · Your solves are saved in this browser.</footer>
+<script src="script.js"></script>
+</body>
+</html>
