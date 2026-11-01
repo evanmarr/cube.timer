@@ -10,55 +10,42 @@
   --bg:#10141d; --panel:#191f2c; --panel2:#222b3a;
   --text:#edf2fa; --muted:#8995a8; --accent:#70e1c1;
   --gold:#e6bd69; --border:#303a4b; --red:#e77979;
-  --shadow: rgba(0,0,0,0.22);
-}
-:root[data-theme="light"] {
-  --bg:#edf3fb; --panel:#ffffff; --panel2:#eef3f9;
-  --text:#1a2432; --muted:#58677c; --accent:#1a9d7a;
-  --gold:#be8614; --border:#d6deea; --red:#d84b5d;
-  --shadow: rgba(15,23,42,0.08);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background .2s,color .2s}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
 button,input,select,textarea{font:inherit}
 button,select{
   cursor:pointer;border:1px solid var(--border);background:var(--panel2);
-  color:var(--text);padding:10px 14px;border-radius:10px;transition:.18s;
-  min-height:44px;touch-action:manipulation;box-shadow:0 1px 0 var(--shadow)
+  color:var(--text);padding:10px 14px;border-radius:10px;transition:.18s
 }
 button:hover,select:hover{border-color:var(--accent);transform:translateY(-1px)}
 button:disabled{opacity:.45;cursor:not-allowed;transform:none}
-button:active,select:active,input:active,textarea:active{transform:translateY(0)}
-select{appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px}
-select option{background:var(--panel);color:var(--text)}
-input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0;min-height:44px}
+select{
+  appearance:none;padding-right:38px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center
+}
+select option{background:#191f2c;color:var(--text)}
+input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0}
 textarea{width:100%;resize:vertical;min-height:85px}
-a{color:var(--accent)}
 header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border);gap:12px}
 header h1{margin:0;font-size:23px;letter-spacing:-1px}
 header span{color:var(--accent)}
-.header-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.status-pill{padding:6px 10px;border-radius:999px;font-size:11px;border:1px solid var(--border);background:var(--panel2);color:var(--muted)}
-.status-pill.online{color:var(--accent)}
-.status-pill.offline{color:var(--red)}
 main{max-width:1200px;margin:auto;padding:24px 20px 60px}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
-.tab{background:transparent;color:var(--muted);min-height:42px;padding:10px 14px}
+.tab{background:transparent;color:var(--muted)}
 .tab.active{background:var(--panel2);color:var(--accent);border-color:var(--accent)}
 .page{display:none}.page.active{display:block}
-.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px;min-width:0;box-shadow:0 1px 3px var(--shadow)}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px;min-width:0}
 .card h2{font-size:17px;margin:0 0 17px}
-.timer-card{text-align:center;padding:30px 20px;touch-action:manipulation;user-select:none}
-#timer{font-size:clamp(65px,12vw,110px);font-weight:800;letter-spacing:-5px;font-variant-numeric:tabular-nums;margin:20px 0;user-select:none;-webkit-user-select:none;transition:color .2s ease}
-#timer.ready{color:var(--accent)}
-#timer.running{color:var(--gold)}
-#timer.warning{color:var(--red)}
+.timer-card{text-align:center;padding:30px 20px}
+#timer{font-size:clamp(65px,12vw,110px);font-weight:800;letter-spacing:-5px;font-variant-numeric:tabular-nums;margin:20px 0}
+#timer.ready{color:var(--accent)}#timer.running{color:var(--gold)}
 .label,.muted{color:var(--muted);font-size:12px}
-.scramble{font-size:clamp(16px,3vw,23px);line-height:1.8;letter-spacing:2px;margin:18px auto;max-width:850px;overflow-wrap:anywhere;user-select:none;-webkit-user-select:none}
+.scramble{font-size:clamp(16px,3vw,23px);line-height:1.8;letter-spacing:2px;margin:18px auto;max-width:850px;overflow-wrap:anywhere}
 .controls,.form-row{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin-top:15px}
-.stats,.records,.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
-.stat,.record-item,.goal-card,.badge-card{background:var(--panel2);padding:15px;border-radius:11px;min-width:0}
+.stats,.records{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stat,.record-item{background:var(--panel2);padding:15px;border-radius:11px;min-width:0}
 .value{font-size:24px;font-weight:750;margin-top:6px;font-variant-numeric:tabular-nums}
 .record-item .value{color:var(--accent)}
 .graph-wrap{height:260px;position:relative;width:100%}
@@ -66,7 +53,7 @@ canvas.graph{width:100%;height:100%;display:block}
 .solve-list{display:flex;flex-direction:column;gap:8px}
 .solve{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:12px;background:var(--panel2);padding:12px;border-radius:10px}
 .solve-time{font-size:17px;font-weight:700}.solve-date{font-size:11px;color:var(--muted)}
-.solve-actions{display:flex;gap:5px}.solve-actions button{padding:6px 9px;font-size:12px;min-height:36px}
+.solve-actions{display:flex;gap:5px}.solve-actions button{padding:6px 9px;font-size:12px}
 .calendar-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-top:15px}
 .calendar-day{aspect-ratio:1;border-radius:4px;background:#252d3b}
 .calendar-day[data-level="1"]{background:#315b53}
@@ -81,35 +68,24 @@ canvas.graph{width:100%;height:100%;display:block}
 #cube-stage{height:390px;min-width:0;background:radial-gradient(ellipse,#263347,#121925 70%);border:1px solid var(--border);border-radius:13px;overflow:hidden;touch-action:none}
 #cube-stage canvas{display:block;width:100%;height:100%}
 .move-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
-.move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace;min-height:32px;display:inline-flex;align-items:center}
+.move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace}
 .move-chip.current{outline:1px solid var(--accent);color:var(--accent)}
+.trainer-layout{display:grid;grid-template-columns:minmax(200px,.8fr) minmax(250px,1.2fr);gap:20px;align-items:center}
+.case-image{background:#111722;border:1px solid var(--border);border-radius:13px;min-height:230px;display:grid;place-items:center;padding:15px}
+.case-image svg{width:min(100%,280px);height:auto}
+.algorithm{font-family:monospace;font-size:19px;line-height:1.8;color:var(--accent);overflow-wrap:anywhere}
+.case-buttons{display:flex;gap:8px;flex-wrap:wrap}
 .field{display:grid;gap:7px;margin:12px 0;min-width:0}
 .field label{color:var(--muted);font-size:12px}
 .field input,.field select{width:100%}
 .setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 0;border-bottom:1px solid var(--border)}
 .setting-row:last-child{border:0}
 .setting-row select{max-width:180px}
-.goal-card strong,.badge-card strong{display:block;margin-bottom:6px}
-.badge-card.locked{opacity:.6}
-.badge-card.unlocked{border:1px solid var(--accent);box-shadow:inset 0 0 0 1px rgba(112,225,193,.18)}
 #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
-.shortcut-config{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:12px;padding-top:8px}
-.shortcut-config .field{margin:0}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
-body[data-layout-preset="compact"] main{max-width:1060px;padding-top:12px}
-body[data-layout-preset="compact"] .card{padding:16px;border-radius:14px}
-body[data-layout-preset="compact"] .tabs{margin-bottom:14px}
-body[data-layout-preset="compact"] .scramble{letter-spacing:1.4px}
-body[data-layout-preset="focus"] .tabs{justify-content:center}
-body[data-layout-preset="focus"] .card{box-shadow:0 0 0 1px rgba(112,225,193,.12)}
-body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32px}
-.shortcuts-box{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:11px;background:var(--panel2);color:var(--text)}
-.shortcuts-box code{font-family:ui-monospace, SFMono-Regular, Menlo, monospace;color:var(--accent)}
 @media(max-width:760px){
-  .two-col,.sim-layout{grid-template-columns:1fr}
+  .two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}
   #cube-stage{height:320px}
-  .setting-row{align-items:flex-start;flex-direction:column}
-  .setting-row select{max-width:none;width:100%}
 }
 @media(max-width:520px){
   main{padding:14px 11px 40px}
@@ -119,8 +95,6 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
   .calendar-grid{gap:3px}
   header{padding:16px}
   header .label{display:none}
-  button,select,input,textarea{min-height:46px}
-  .tab{padding:9px 12px}
 }
 </style>
 </head>
@@ -129,10 +103,7 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
 
 <header>
   <h1>Cube.<span>Timer</span></h1>
-  <div class="header-meta">
-    <div class="label">Your personal speedcubing workspace</div>
-    <div id="network-status" class="status-pill online">Online</div>
-  </div>
+  <div class="label">Your personal speedcubing workspace</div>
 </header>
 
 <main>
@@ -142,20 +113,21 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
   <button class="tab" data-page="history-page">History</button>
   <button class="tab" data-page="records-page">Records</button>
   <button class="tab" data-page="sim-page">3D Simulator</button>
+  <button class="tab" data-page="trainer-page">Algorithm Trainer</button>
   <button class="tab" data-page="settings-page">Cube Settings</button>
 </nav>
 
 <section class="page active" id="timer-page">
-  <div class="card timer-card" id="timer-card">
+  <div class="card timer-card">
     <div class="label">3×3 SPEED TIMER</div>
     <div id="timer">0.00</div>
-    <div id="timer-label" class="muted">Hold or tap to start</div>
+    <div id="timer-label" class="muted">Hold SPACE, then release to start</div>
     <div id="scramble" class="scramble"></div>
     <div class="controls">
       <button id="new-scramble">New Scramble</button>
       <button id="manual-add">Add Solve</button>
     </div>
-    <p class="muted">Press and hold space or tap the timer to prepare. Release to start. Press again to stop.</p>
+    <p class="muted">Hold SPACE to prepare. Release to start. Press SPACE again to stop.</p>
   </div>
   <div class="card">
     <h2>Session Statistics</h2>
@@ -171,24 +143,12 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
 <section class="page" id="stats-page">
   <div class="card">
     <h2>Advanced Analytics</h2>
-    <div class="controls" style="justify-content:flex-start; margin-top:0;">
-      <label class="label" for="progress-range">Range</label>
-      <select id="progress-range">
-        <option value="7">7 days</option>
-        <option value="30">30 days</option>
-        <option value="90">90 days</option>
-        <option value="365">1 year</option>
-        <option value="all">All time</option>
-      </select>
-    </div>
-    <div class="stats" style="margin-top:16px;">
+    <div class="stats">
       <div class="stat"><div class="label">Ao50</div><div class="value" id="ao50">--</div></div>
       <div class="stat"><div class="label">Ao100</div><div class="value" id="ao100">--</div></div>
-      <div class="stat"><div class="label">Avg Solve</div><div class="value" id="avg-solve">--</div></div>
-      <div class="stat"><div class="label">Progress</div><div class="value" id="progress-rate">--</div></div>
     </div>
     <div class="graph-wrap"><canvas class="graph" id="trendGraph"></canvas></div>
-    <p class="muted">Rolling Ao5 and Ao12 over the selected time window.</p>
+    <p class="muted">Rolling Ao5 and Ao12.</p>
   </div>
   <div class="card"><h2>Solve Distribution</h2><div class="graph-wrap"><canvas class="graph" id="distributionGraph"></canvas></div></div>
   <div class="card"><h2>Practice Calendar</h2><div id="calendar"></div></div>
@@ -233,15 +193,6 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
       </div>
       <div>
         <div class="field">
-          <label for="sim-cube-size">Cube size</label>
-          <select id="sim-cube-size">
-            <option value="2">2×2</option>
-            <option value="3" selected>3×3</option>
-            <option value="4">4×4</option>
-            <option value="5">5×5</option>
-          </select>
-        </div>
-        <div class="field">
           <label for="move-select">Choose a move</label>
           <select id="move-select">
             <option>R</option><option>R'</option><option>R2</option>
@@ -275,29 +226,6 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
           <button id="sim-pause">Pause</button>
           <button id="sim-undo">Undo Last Move</button>
         </div>
-
-        <div class="field">
-          <label>Face colors</label>
-          <div class="stats">
-            <label class="field">U <input type="color" data-face="U" value="#ffffff"></label>
-            <label class="field">D <input type="color" data-face="D" value="#ffd500"></label>
-            <label class="field">F <input type="color" data-face="F" value="#159447"></label>
-            <label class="field">B <input type="color" data-face="B" value="#2455c5"></label>
-            <label class="field">R <input type="color" data-face="R" value="#c62828"></label>
-            <label class="field">L <input type="color" data-face="L" value="#ff8c00"></label>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="sticker-style">Sticker style</label>
-          <select id="sticker-style">
-            <option value="solid">Solid</option>
-            <option value="striped">Striped</option>
-            <option value="checker">Checker</option>
-            <option value="dots">Dots</option>
-          </select>
-        </div>
-
         <h3>Move sequence</h3>
         <div class="move-list" id="sim-moves"></div>
       </div>
@@ -305,16 +233,46 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
   </div>
 </section>
 
+<section class="page" id="trainer-page">
+  <div class="card">
+    <h2>Algorithm Trainer</h2>
+    <p class="muted">Study a case, recognize its pattern, and practice its algorithm.</p>
+    <div class="controls">
+      <label class="label" for="trainer-category">Category</label>
+      <select id="trainer-category">
+        <option value="OLL">OLL</option>
+        <option value="PLL">PLL</option>
+        <option value="F2L">F2L</option>
+      </select>
+      <label class="label" for="trainer-case">Case</label>
+      <select id="trainer-case"></select>
+    </div>
+    <div class="trainer-layout" style="margin-top:20px">
+      <div class="case-image" id="case-image"></div>
+      <div>
+        <h2 id="case-title">OLL Case</h2>
+        <p id="case-description" class="muted"></p>
+        <div class="algorithm" id="case-algorithm"></div>
+        <div class="controls">
+          <button id="show-algorithm">Show Algorithm</button>
+          <button id="next-case">Next Case</button>
+          <button id="practice-case">Send to Simulator</button>
+        </div>
+        <p class="muted" id="trainer-note">Try to recognize the pattern before revealing the algorithm.</p>
+      </div>
+    </div>
+    <p class="muted">
+      Reference diagrams and full case collections:
+      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/oll-algorithms.pdf" target="_blank" rel="noopener">OLL</a> ·
+      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/pll-algorithms.pdf" target="_blank" rel="noopener">PLL</a> ·
+      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/f2l.pdf" target="_blank" rel="noopener">F2L</a>
+    </p>
+  </div>
+</section>
+
 <section class="page" id="settings-page">
   <div class="card">
     <h2>Cube Settings</h2>
-    <div class="setting-row">
-      <div><strong>Theme</strong><div class="muted">Choose the app theme.</div></div>
-      <select id="theme-select">
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
-    </div>
     <div class="setting-row">
       <div><strong>Cube size</strong><div class="muted">Choose the simulator cube size.</div></div>
       <select id="setting-cube-size">
@@ -333,8 +291,8 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
       </select>
     </div>
     <div class="setting-row">
-      <div><strong>Inspection timer</strong><div class="muted">Enable a 15-second inspection countdown.</div></div>
-      <input type="checkbox" id="setting-inspection" checked>
+      <div><strong>Timer inspection</strong><div class="muted">Enable a 15-second inspection period.</div></div>
+      <input type="checkbox" id="setting-inspection">
     </div>
     <div class="setting-row">
       <div><strong>Confetti on personal best</strong><div class="muted">Celebrate a new best single.</div></div>
@@ -347,109 +305,12 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
         <option value="3">Thousandths</option>
       </select>
     </div>
-    <div class="setting-row">
-      <div><strong>Layout preset</strong><div class="muted">Choose the timer layout style.</div></div>
-      <select id="layout-preset">
-        <option value="classic">Classic</option>
-        <option value="compact">Compact</option>
-        <option value="focus">Focus</option>
-      </select>
-    </div>
-    <div class="setting-row">
-      <div><strong>Show scramble</strong><div class="muted">Toggle scramble display.</div></div>
-      <input type="checkbox" id="show-scramble" checked>
-    </div>
-    <div class="setting-row">
-      <div><strong>Show mini stats</strong><div class="muted">Toggle quick session stats.</div></div>
-      <input type="checkbox" id="show-stats" checked>
-    </div>
-    <div class="setting-row">
-      <div><strong>Daily goal</strong><div class="muted">Set the solves target for today.</div></div>
-      <input type="number" id="daily-goal" value="0" min="0" max="200" style="width:110px;">
-    </div>
-    <div class="setting-row">
-      <div><strong>Keyboard shortcuts</strong><div class="muted">Check the available timer controls.</div></div>
-      <button id="toggle-shortcuts">View shortcuts</button>
-    </div>
-    <div class="shortcut-config" id="shortcut-config">
-      <div class="field">
-        <label for="shortcut-start">Start / Stop</label>
-        <select id="shortcut-start" data-shortcut-action="start">
-          <option value="Space">Space</option>
-          <option value="KeyN">N</option>
-          <option value="KeyM">M</option>
-          <option value="KeyR">R</option>
-          <option value="KeyS">S</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="shortcut-scramble">New Scramble</label>
-        <select id="shortcut-scramble" data-shortcut-action="scramble">
-          <option value="KeyN">N</option>
-          <option value="Space">Space</option>
-          <option value="KeyM">M</option>
-          <option value="KeyR">R</option>
-          <option value="KeyS">S</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="shortcut-manual">Manual Add</label>
-        <select id="shortcut-manual" data-shortcut-action="manual">
-          <option value="KeyM">M</option>
-          <option value="Space">Space</option>
-          <option value="KeyN">N</option>
-          <option value="KeyR">R</option>
-          <option value="KeyS">S</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="shortcut-reset">Reset Timer</label>
-        <select id="shortcut-reset" data-shortcut-action="reset">
-          <option value="KeyR">R</option>
-          <option value="Space">Space</option>
-          <option value="KeyN">N</option>
-          <option value="KeyM">M</option>
-          <option value="KeyS">S</option>
-        </select>
-      </div>
-    </div>
-    <div class="setting-row">
-      <div><strong>Restore defaults</strong><div class="muted">Reset the app layout and timer behavior.</div></div>
-      <button id="restore-defaults">Restore</button>
-    </div>
-    <div class="shortcuts-box" id="shortcut-help" hidden>
-      <strong>Shortcuts</strong><br>
-      <div><code>Space</code> = start/hold/stop timer</div>
-      <div><code>N</code> = new scramble</div>
-      <div><code>M</code> = manual add</div>
-      <div><code>R</code> = reset timer</div>
-    </div>
     <p class="muted">Settings are stored in this browser.</p>
-  </div>
-
-  <div class="card">
-    <h2>Progress & Goals</h2>
-    <div class="mini-grid">
-      <div class="goal-card">
-        <strong>Daily Goal</strong>
-        <div id="goal-progress">0 / 0 solves</div>
-      </div>
-      <div class="goal-card">
-        <strong>Weekly Summary</strong>
-        <div id="weekly-summary">0 solves this week</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>Milestones & Badges</h2>
-    <div id="achievement-list" class="mini-grid"></div>
   </div>
 </section>
 </main>
 
 <footer>Cube.Timer · Your solves are saved in this browser.</footer>
 <script src="script.js"></script>
-<script src="enhancements.js"></script>
 </body>
 </html>
