@@ -2,535 +2,359 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cube.Timer</title>
-
-  <style>
-    :root {
-      --bg: #10141d;
-      --panel: #191f2c;
-      --panel2: #222b3a;
-      --text: #edf2fa;
-      --muted: #8995a8;
-      --accent: #70e1c1;
-      --gold: #e6bd69;
-      --border: #303a4b;
-      --red: #e77979;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--panel2);
-      color: var(--text);
-      padding: 10px 15px;
-      border-radius: 9px;
-      transition: .15s;
-    }
-
-    button:hover {
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    button.danger {
-      color: var(--red);
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 5%;
-      border-bottom: 1px solid var(--border);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: -1px;
-    }
-
-    header span {
-      color: var(--accent);
-    }
-
-    main {
-      max-width: 1150px;
-      margin: auto;
-      padding: 25px 20px 60px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 22px;
-    }
-
-    .tab {
-      background: transparent;
-      color: var(--muted);
-    }
-
-    .tab.active {
-      background: var(--panel2);
-      color: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 18px;
-    }
-
-    .card h2 {
-      font-size: 17px;
-      margin: 0 0 18px;
-    }
-
-    .timer-card {
-      text-align: center;
-      padding: 35px 20px;
-    }
-
-    #timer {
-      font-size: clamp(65px, 12vw, 110px);
-      font-weight: 750;
-      letter-spacing: -5px;
-      font-variant-numeric: tabular-nums;
-      margin: 25px 0;
-    }
-
-    #timer.ready {
-      color: var(--accent);
-    }
-
-    #timer.running {
-      color: var(--gold);
-    }
-
-    #timer-label {
-      color: var(--muted);
-      font-size: 13px;
-      min-height: 20px;
-    }
-
-    .scramble {
-      font-size: clamp(17px, 3vw, 23px);
-      line-height: 1.8;
-      letter-spacing: 2px;
-      margin: 20px auto;
-      max-width: 850px;
-      overflow-wrap: anywhere;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 12px;
-    }
-
-    .stat {
-      background: var(--panel2);
-      padding: 15px;
-      border-radius: 10px;
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .value {
-      font-size: 24px;
-      font-weight: 750;
-      margin-top: 6px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .graph-wrap {
-      width: 100%;
-      height: 260px;
-      position: relative;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .graph-note {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 10px;
-    }
-
-    .records {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-    }
-
-    .record-item {
-      background: var(--panel2);
-      padding: 15px;
-      border-radius: 10px;
-    }
-
-    .record-item .value {
-      color: var(--accent);
-    }
-
-    .record-item small {
-      color: var(--muted);
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 5px;
-      margin-top: 15px;
-    }
-
-    .calendar-day {
-      aspect-ratio: 1;
-      border-radius: 4px;
-      background: #252d3b;
-      position: relative;
-    }
-
-    .calendar-day[data-level="1"] { background: #315b53; }
-    .calendar-day[data-level="2"] { background: #368875; }
-    .calendar-day[data-level="3"] { background: #48b69a; }
-    .calendar-day[data-level="4"] { background: #70e1c1; }
-
-    .calendar-day:hover::after {
-      content: attr(title);
-      position: absolute;
-      bottom: 120%;
-      left: 0;
-      background: #303a4b;
-      padding: 5px;
-      border-radius: 5px;
-      font-size: 11px;
-      white-space: nowrap;
-      z-index: 5;
-    }
-
-    .calendar-labels {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 11px;
-      margin-top: 10px;
-    }
-
-    .solve-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .solve {
-      display: grid;
-      grid-template-columns: 45px 1fr auto auto;
-      align-items: center;
-      gap: 12px;
-      background: var(--panel2);
-      padding: 12px;
-      border-radius: 9px;
-    }
-
-    .solve-number {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .solve-time {
-      font-weight: 700;
-      font-size: 17px;
-    }
-
-    .solve-date {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .solve-actions {
-      display: flex;
-      gap: 5px;
-    }
-
-    .solve-actions button {
-      padding: 6px 9px;
-      font-size: 12px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    input {
-      background: var(--panel2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px;
-      min-width: 120px;
-    }
-
-    .empty {
-      color: var(--muted);
-      text-align: center;
-      padding: 25px;
-    }
-
-    a {
-      color: var(--accent);
-    }
-
-    footer {
-      color: var(--muted);
-      text-align: center;
-      font-size: 12px;
-      padding: 25px;
-    }
-
-    @media(max-width: 600px) {
-      main {
-        padding: 15px 12px 40px;
-      }
-
-      .card {
-        padding: 15px;
-      }
-
-      .solve {
-        grid-template-columns: 30px 1fr auto;
-      }
-
-      .solve-date {
-        display: none;
-      }
-
-      .calendar-grid {
-        gap: 3px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cube.Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --bg:#10141d; --panel:#191f2c; --panel2:#222b3a;
+  --text:#edf2fa; --muted:#8995a8; --accent:#70e1c1;
+  --gold:#e6bd69; --border:#303a4b; --red:#e77979;
+}
+* { box-sizing:border-box }
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:Inter,system-ui,sans-serif; min-height:100vh;
+}
+button,input,select { font:inherit }
+button,select {
+  cursor:pointer; border:1px solid var(--border);
+  background:var(--panel2); color:var(--text);
+  padding:10px 14px; border-radius:9px;
+}
+button:hover { border-color:var(--accent) }
+input {
+  background:var(--panel2); color:var(--text);
+  border:1px solid var(--border); border-radius:8px;
+  padding:10px; max-width:100%;
+}
+header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:20px 5%; border-bottom:1px solid var(--border);
+}
+header h1 { margin:0; font-size:23px; letter-spacing:-1px }
+header span { color:var(--accent) }
+main { max-width:1200px; margin:auto; padding:25px 20px 60px }
+.tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:22px }
+.tab { background:transparent; color:var(--muted) }
+.tab.active { color:var(--accent); border-color:var(--accent); background:var(--panel2) }
+.page { display:none }
+.page.active { display:block }
+.card {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:15px; padding:20px; margin-bottom:18px;
+}
+.card h2 { font-size:17px; margin:0 0 18px }
+.label { color:var(--muted); font-size:12px }
+.timer-card { text-align:center; padding:35px 20px }
+#timer {
+  font-size:clamp(65px,12vw,110px); font-weight:800;
+  letter-spacing:-5px; font-variant-numeric:tabular-nums;
+  margin:25px 0;
+}
+#timer.ready { color:var(--accent) }
+#timer.running { color:var(--gold) }
+#timer-label { color:var(--muted); min-height:20px; font-size:13px }
+.scramble {
+  font-size:clamp(17px,3vw,23px); line-height:1.8;
+  letter-spacing:2px; margin:20px auto; max-width:850px;
+  overflow-wrap:anywhere;
+}
+.controls { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:20px }
+.stats,.records {
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px;
+}
+.stat,.record-item { background:var(--panel2); padding:15px; border-radius:10px }
+.value { font-size:24px; font-weight:750; margin-top:6px; font-variant-numeric:tabular-nums }
+.record-item .value { color:var(--accent) }
+.graph-wrap { height:260px; width:100% }
+canvas { width:100%; height:100% }
+.solve-list { display:flex; flex-direction:column; gap:8px }
+.solve {
+  display:grid; grid-template-columns:45px 1fr auto auto;
+  align-items:center; gap:12px; background:var(--panel2);
+  padding:12px; border-radius:9px;
+}
+.solve-time { font-weight:700; font-size:17px }
+.solve-date,.solve-number { color:var(--muted); font-size:11px }
+.solve-actions { display:flex; gap:5px }
+.solve-actions button { padding:6px 9px; font-size:12px }
+.grid-two { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:15px }
+.field { display:flex; flex-direction:column; gap:7px; margin:12px 0 }
+.field label { color:var(--muted); font-size:12px }
+.field input,.field select { width:100% }
+.muted { color:var(--muted) }
+.accent { color:var(--accent) }
+.danger { color:var(--red) }
+#cubeCanvas {
+  width:100%; height:380px; display:block;
+  background:#111722; border-radius:12px;
+}
+.algorithm-list { display:flex; flex-direction:column; gap:8px }
+.algorithm {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:12px; background:var(--panel2); border-radius:9px;
+}
+.algorithm code { color:var(--accent); font-size:15px }
+.hidden { display:none !important }
+footer { text-align:center; padding:25px; color:var(--muted); font-size:12px }
+@media(max-width:600px) {
+  main { padding:15px 12px 40px }
+  .card { padding:15px }
+  .solve { grid-template-columns:30px 1fr auto }
+  .solve-date { display:none }
+  header { padding:16px }
+}
+</style>
 </head>
 
 <body>
-
 <header>
-  <h1>Cube .<span>Timer</span></h1>
-  <div class="label">3×3 Speedcubing</div>
+  <h1>Cube.<span>Timer</span></h1>
+  <div class="label">Your cubing workspace</div>
 </header>
 
 <main>
+<nav class="tabs">
+  <button class="tab active" data-page="timer-page">Timer</button>
+  <button class="tab" data-page="stats-page">Statistics</button>
+  <button class="tab" data-page="history-page">History</button>
+  <button class="tab" data-page="records-page">Records</button>
+  <button class="tab" data-page="simulator-page">3D Simulator</button>
+  <button class="tab" data-page="trainer-page">Algorithm Trainer</button>
+  <button class="tab" data-page="settings-page">Settings</button>
+</nav>
 
-  <nav class="tabs">
-    <button class="tab active" data-page="timer-page">Timer</button>
-    <button class="tab" data-page="stats-page">Statistics</button>
-    <button class="tab" data-page="history-page">History</button>
-    <button class="tab" data-page="records-page">Records</button>
-  </nav>
+<!-- TIMER -->
+<section class="page active" id="timer-page">
+  <div class="card">
+    <div class="grid-two">
+      <div class="field">
+        <label>Active puzzle</label>
+        <select id="timerPuzzle">
+          <option>3x3</option><option>2x2</option><option>4x4</option>
+          <option>5x5</option><option>6x6</option><option>7x7</option>
+          <option>Pyraminx</option><option>Megaminx</option><option>Skewb</option>
+          <option>Square-1</option><option>Clock</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Solving style</label>
+        <select id="timerStyle">
+          <option value="Normal">Normal</option>
+          <option value="OH">One-Handed</option>
+          <option value="Blind">Blindfolded</option>
+          <option value="FMC">Fewest Moves</option>
+          <option value="Training">Training</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-  <!-- TIMER -->
-  <section class="page active" id="timer-page">
+  <div class="card timer-card">
+    <div class="label" id="timer-heading">3×3 TIMER</div>
+    <div id="timer">0.00</div>
+    <div id="timer-label">Hold SPACE, then release to start</div>
+    <div class="scramble" id="scramble"></div>
+    <div class="controls">
+      <button id="new-scramble">New Scramble</button>
+      <button id="manual-add">Add Solve</button>
+    </div>
+    <p class="muted">Hold SPACE to prepare. Release to start. Press again to stop.</p>
+  </div>
 
-    <div class="card timer-card">
-      <div class="label">3×3 TIMER</div>
+  <div class="card">
+    <h2>Session Statistics</h2>
+    <div class="stats">
+      <div class="stat"><div class="label">Solves</div><div class="value" id="solve-count">0</div></div>
+      <div class="stat"><div class="label">Best Single</div><div class="value" id="best-single">--</div></div>
+      <div class="stat"><div class="label">Ao5</div><div class="value" id="ao5">--</div></div>
+      <div class="stat"><div class="label">Ao12</div><div class="value" id="ao12">--</div></div>
+    </div>
+  </div>
+</section>
 
-      <div id="timer">0.00</div>
+<!-- STATISTICS -->
+<section class="page" id="stats-page">
+  <div class="card">
+    <h2>Advanced Analytics</h2>
+    <div class="stats">
+      <div class="stat"><div class="label">Ao50</div><div class="value" id="ao50">--</div></div>
+      <div class="stat"><div class="label">Ao100</div><div class="value" id="ao100">--</div></div>
+    </div>
+    <div class="graph-wrap"><canvas id="trendGraph"></canvas></div>
+    <p class="muted">Rolling Ao5 and Ao12 performance.</p>
+  </div>
+  <div class="card">
+    <h2>Solve Distribution</h2>
+    <div class="graph-wrap"><canvas id="distributionGraph"></canvas></div>
+  </div>
+  <div class="card">
+    <h2>Solve Progress</h2>
+    <div class="graph-wrap"><canvas id="graph"></canvas></div>
+  </div>
+</section>
 
-      <div id="timer-label">Press and hold SPACE, then release to start</div>
+<!-- HISTORY -->
+<section class="page" id="history-page">
+  <div class="card">
+    <h2>Solve History</h2>
+    <div class="controls">
+      <button id="manual-add-history">Add Solve</button>
+      <button id="export-data">Export Data</button>
+      <button id="import-data">Import Data</button>
+      <button id="clear-solves" class="danger">Clear All</button>
+      <input type="file" id="import-file" accept=".json" hidden>
+    </div>
+    <div class="solve-list" id="solve-list"></div>
+  </div>
+</section>
 
-      <div class="scramble" id="scramble"></div>
+<!-- RECORDS -->
+<section class="page" id="records-page">
+  <div class="card">
+    <h2>Personal Records</h2>
+    <div class="records" id="personalRecords"></div>
+  </div>
+  <div class="card">
+    <h2>World Records</h2>
+    <a href="https://www.worldcubeassociation.org/results/records" target="_blank" rel="noopener">Official WCA records</a>
+  </div>
+</section>
 
+<!-- 3D SIMULATOR -->
+<section class="page" id="simulator-page">
+  <div class="card">
+    <h2>3D Cube Simulator</h2>
+    <p class="muted">Rotate the view, apply moves, and explore algorithms.</p>
+    <canvas id="cubeCanvas"></canvas>
+    <div class="field">
+      <label>Moves</label>
+      <input id="cubeMoves" placeholder="Example: R U R' U'">
+    </div>
+    <div class="controls">
+      <button id="applyMoves">Apply Moves</button>
+      <button id="resetCube">Reset Cube</button>
+      <button id="undoMove">Undo</button>
+    </div>
+    <div class="field">
+      <label>Move playback</label>
+      <input id="playbackMoves" placeholder="Enter an algorithm">
+    </div>
+    <div class="controls">
+      <button id="playAlgorithm">Play Algorithm</button>
+      <button id="stepAlgorithm">Next Move</button>
+    </div>
+    <p id="playbackStatus" class="muted">Ready.</p>
+  </div>
+</section>
+
+<!-- ALGORITHM TRAINER -->
+<section class="page" id="trainer-page">
+  <div class="card">
+    <h2>Algorithm Trainer</h2>
+    <div class="grid-two">
+      <div class="field">
+        <label>Algorithm category</label>
+        <select id="algorithmCategory">
+          <option value="OLL">OLL</option>
+          <option value="PLL">PLL</option>
+          <option value="F2L">F2L</option>
+          <option value="Custom">Custom</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Practice mode</label>
+        <select id="trainerMode">
+          <option value="recognition">Recognition practice</option>
+          <option value="execution">Execution practice</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="label">CURRENT CASE</div>
+      <h2 id="caseName">Ready to practice?</h2>
+      <div id="caseAlgorithm" class="scramble accent">Choose a category and begin.</div>
       <div class="controls">
-        <button id="new-scramble">New Scramble</button>
-        <button id="manual-add">Add Solve</button>
+        <button id="nextCase">Next Case</button>
+        <button id="revealAlgorithm">Reveal Algorithm</button>
+        <button id="startAlgorithmTimer">Start Practice Timer</button>
+        <button id="stopAlgorithmTimer">Stop Timer</button>
       </div>
+      <div id="algorithmTimer" class="value">0.00</div>
+    </div>
+    <h2>Your Algorithm Progress</h2>
+    <div id="algorithmProgress" class="algorithm-list"></div>
+  </div>
 
-      <div class="graph-note">
-        Spacebar: hold to prepare, release to start, press again to stop.
+  <div class="card">
+    <h2>Add a Custom Algorithm</h2>
+    <div class="field"><label>Case name</label><input id="customName" placeholder="Example: My OLL case"></div>
+    <div class="field"><label>Algorithm</label><input id="customAlgorithm" placeholder="R U R' U'"></div>
+    <button id="saveCustomAlgorithm">Save Algorithm</button>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settings-page">
+  <div class="card">
+    <h2>Timer Settings</h2>
+    <div class="grid-two">
+      <div class="field">
+        <label>Inspection time</label>
+        <select id="inspectionSetting">
+          <option value="0">Off</option><option value="15">15 seconds</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Timer precision</label>
+        <select id="precisionSetting">
+          <option value="2">Hundredths</option>
+          <option value="3">Milliseconds</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sound effects</label>
+        <select id="soundSetting">
+          <option value="on">On</option><option value="off">Off</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Alert on personal best</label>
+        <select id="pbAlert">
+          <option value="on">On</option><option value="off">Off</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Alert on average milestone</label>
+        <select id="averageAlert">
+          <option value="on">On</option><option value="off">Off</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Average milestone (seconds)</label>
+        <input type="number" id="averageMilestone" min="1" value="30">
       </div>
     </div>
-
-    <div class="card">
-      <h2>Session Statistics</h2>
-      <div class="stats">
-        <div class="stat">
-          <div class="label">Solves</div>
-          <div class="value" id="solve-count">0</div>
-        </div>
-        <div class="stat">
-          <div class="label">Best Single</div>
-          <div class="value" id="best-single">--</div>
-        </div>
-        <div class="stat">
-          <div class="label">Ao5</div>
-          <div class="value" id="ao5">--</div>
-        </div>
-        <div class="stat">
-          <div class="label">Ao12</div>
-          <div class="value" id="ao12">--</div>
-        </div>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- STATISTICS -->
-  <section class="page" id="stats-page">
-
-    <div class="card">
-      <h2>Advanced Analytics</h2>
-      <div class="stats">
-        <div class="stat">
-          <div class="label">Ao50</div>
-          <div class="value" id="ao50">--</div>
-        </div>
-        <div class="stat">
-          <div class="label">Ao100</div>
-          <div class="value" id="ao100">--</div>
-        </div>
-      </div>
-
-      <div class="graph-wrap">
-        <canvas id="trendGraph"></canvas>
-      </div>
-      <div class="graph-note">
-        Rolling Ao5 and Ao12 performance.
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Solve Distribution</h2>
-      <div class="graph-wrap">
-        <canvas id="distributionGraph"></canvas>
-      </div>
-      <div class="graph-note">
-        Number of solves in each 5-second range.
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Practice Calendar</h2>
-      <div id="calendar"></div>
-      <div class="graph-note">
-        Your last 84 days of practice.
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Solve Progress</h2>
-      <div class="graph-wrap">
-        <canvas id="graph"></canvas>
-      </div>
-      <div class="graph-note">
-        Every solve plotted chronologically.
-      </div>
-    </div>
-
-  </section>
-
-  <!-- HISTORY -->
-  <section class="page" id="history-page">
-
-    <div class="card">
-      <h2>Solve History</h2>
-
-      <div class="controls">
-        <button id="manual-add-history">Add Solve</button>
-        <button id="export-data">Export Data</button>
-        <button id="import-data">Import Data</button>
-        <button class="danger" id="clear-solves">Clear All</button>
-        <input type="file" id="import-file" accept=".json" hidden>
-      </div>
-
-      <div class="graph-note">
-        Select Edit to change a solve or Delete to remove it.
-      </div>
-
-      <div class="solve-list" id="solve-list"></div>
-    </div>
-
-  </section>
-
-  <!-- RECORDS -->
-  <section class="page" id="records-page">
-
-    <div class="card">
-      <h2>Personal Records</h2>
-      <div class="records" id="personalRecords"></div>
-    </div>
-
-    <div class="card">
-      <h2>World Records</h2>
-      <p>Official 3×3 world records are maintained by the World Cube Association.</p>
-      <p>
-        <a href="https://www.worldcubeassociation.org/results/records"
-           target="_blank" rel="noopener">
-          View official WCA world records
-        </a>
-      </p>
-      <div class="graph-note">
-        Visit the official results page for the latest verified records.
-      </div>
-    </div>
-
-  </section>
+    <button id="saveSettings">Save Settings</button>
+    <p id="settingsStatus" class="muted"></p>
+  </div>
+  <div class="card">
+    <h2>Profiles</h2>
+    <p class="muted">Each puzzle and solving style has its own session and statistics.</p>
+    <div class="field"><label>Active profile</label><select id="profileSelect"></select></div>
+    <button id="createProfile">Create Profile</button>
+  </div>
+</section>
 
 </main>
 
-<footer>
-  Cube.Timer · Your solves are saved in this browser.
-</footer>
+<footer>Cube.Timer · Your cubing workspace</footer>
 
-<script src="script.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="./script.js"></script>
 </body>
 </html>
