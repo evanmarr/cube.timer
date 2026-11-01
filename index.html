@@ -13,19 +13,22 @@
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
-button,input,select{font:inherit}
+button,input,select,textarea{font:inherit}
 button,select{
   cursor:pointer;border:1px solid var(--border);background:var(--panel2);
   color:var(--text);padding:10px 14px;border-radius:10px;transition:.18s
 }
 button:hover,select:hover{border-color:var(--accent);transform:translateY(-1px)}
 button:disabled{opacity:.45;cursor:not-allowed;transform:none}
-select{appearance:none;padding-right:38px;background-image:
-  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 13px center}
+select{
+  appearance:none;padding-right:38px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center
+}
 select option{background:#191f2c;color:var(--text)}
-input{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0}
-header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border)}
+input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0}
+textarea{width:100%;resize:vertical;min-height:85px}
+header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border);gap:12px}
 header h1{margin:0;font-size:23px;letter-spacing:-1px}
 header span{color:var(--accent)}
 main{max-width:1200px;margin:auto;padding:24px 20px 60px}
@@ -53,13 +56,15 @@ canvas.graph{width:100%;height:100%;display:block}
 .solve-actions{display:flex;gap:5px}.solve-actions button{padding:6px 9px;font-size:12px}
 .calendar-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-top:15px}
 .calendar-day{aspect-ratio:1;border-radius:4px;background:#252d3b}
-.calendar-day[data-level="1"]{background:#315b53}.calendar-day[data-level="2"]{background:#368875}
-.calendar-day[data-level="3"]{background:#48b69a}.calendar-day[data-level="4"]{background:#70e1c1}
+.calendar-day[data-level="1"]{background:#315b53}
+.calendar-day[data-level="2"]{background:#368875}
+.calendar-day[data-level="3"]{background:#48b69a}
+.calendar-day[data-level="4"]{background:#70e1c1}
 .calendar-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin-top:9px}
 .empty{color:var(--muted);text-align:center;padding:25px}
 .danger{color:var(--red)}
 .two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.sim-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(220px,.7fr);gap:18px}
+.sim-layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(240px,.7fr);gap:18px}
 #cube-stage{height:390px;min-width:0;background:radial-gradient(ellipse,#263347,#121925 70%);border:1px solid var(--border);border-radius:13px;overflow:hidden;touch-action:none}
 #cube-stage canvas{display:block;width:100%;height:100%}
 .move-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
@@ -67,21 +72,35 @@ canvas.graph{width:100%;height:100%;display:block}
 .move-chip.current{outline:1px solid var(--accent);color:var(--accent)}
 .trainer-layout{display:grid;grid-template-columns:minmax(200px,.8fr) minmax(250px,1.2fr);gap:20px;align-items:center}
 .case-image{background:#111722;border:1px solid var(--border);border-radius:13px;min-height:230px;display:grid;place-items:center;padding:15px}
-.case-image svg{width:min(100%,240px);height:auto}
+.case-image svg{width:min(100%,280px);height:auto}
 .algorithm{font-family:monospace;font-size:19px;line-height:1.8;color:var(--accent);overflow-wrap:anywhere}
 .case-buttons{display:flex;gap:8px;flex-wrap:wrap}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+.field{display:grid;gap:7px;margin:12px 0;min-width:0}
+.field label{color:var(--muted);font-size:12px}
+.field input,.field select{width:100%}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:13px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border:0}
+.setting-row select{max-width:180px}
 #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
-@media(max-width:760px){.two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}#cube-stage{height:320px}}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+@media(max-width:760px){
+  .two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}
+  #cube-stage{height:320px}
+}
 @media(max-width:520px){
-  main{padding:14px 11px 40px}.card{padding:15px}
-  .solve{grid-template-columns:28px 1fr}.solve-actions{grid-column:2}
-  .calendar-grid{gap:3px}header{padding:16px}
+  main{padding:14px 11px 40px}
+  .card{padding:15px}
+  .solve{grid-template-columns:28px 1fr}
+  .solve-actions{grid-column:2}
+  .calendar-grid{gap:3px}
+  header{padding:16px}
+  header .label{display:none}
 }
 </style>
 </head>
 <body>
 <canvas id="confetti"></canvas>
+
 <header>
   <h1>Cube.<span>Timer</span></h1>
   <div class="label">Your personal speedcubing workspace</div>
@@ -95,6 +114,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   <button class="tab" data-page="records-page">Records</button>
   <button class="tab" data-page="sim-page">3D Simulator</button>
   <button class="tab" data-page="trainer-page">Algorithm Trainer</button>
+  <button class="tab" data-page="settings-page">Cube Settings</button>
 </nav>
 
 <section class="page active" id="timer-page">
@@ -162,7 +182,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
 <section class="page" id="sim-page">
   <div class="card">
     <h2>3D Cube Simulator</h2>
-    <p class="muted">Drag the cube to rotate your view. Select a move to animate it.</p>
+    <p class="muted">Drag to rotate the view. Run individual moves or an entire algorithm.</p>
     <div class="sim-layout">
       <div>
         <div id="cube-stage" aria-label="Interactive 3D Rubik's Cube"></div>
@@ -172,19 +192,42 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
         </div>
       </div>
       <div>
-        <label class="label" for="move-select">Choose a move</label>
-        <select id="move-select">
-          <option>R</option><option>R'</option><option>R2</option>
-          <option>L</option><option>L'</option><option>L2</option>
-          <option>U</option><option>U'</option><option>U2</option>
-          <option>D</option><option>D'</option><option>D2</option>
-          <option>F</option><option>F'</option><option>F2</option>
-          <option>B</option><option>B'</option><option>B2</option>
-        </select>
+        <div class="field">
+          <label for="move-select">Choose a move</label>
+          <select id="move-select">
+            <option>R</option><option>R'</option><option>R2</option>
+            <option>L</option><option>L'</option><option>L2</option>
+            <option>U</option><option>U'</option><option>U2</option>
+            <option>D</option><option>D'</option><option>D2</option>
+            <option>F</option><option>F'</option><option>F2</option>
+            <option>B</option><option>B'</option><option>B2</option>
+            <option>r</option><option>r'</option><option>r2</option>
+            <option>l</option><option>l'</option><option>l2</option>
+            <option>u</option><option>u'</option><option>u2</option>
+            <option>d</option><option>d'</option><option>d2</option>
+            <option>f</option><option>f'</option><option>f2</option>
+            <option>b</option><option>b'</option><option>b2</option>
+            <option>M</option><option>M'</option><option>M2</option>
+            <option>E</option><option>E'</option><option>E2</option>
+            <option>S</option><option>S'</option><option>S2</option>
+            <option>x</option><option>x'</option><option>x2</option>
+            <option>y</option><option>y'</option><option>y2</option>
+            <option>z</option><option>z'</option><option>z2</option>
+          </select>
+        </div>
         <div class="controls"><button id="sim-turn">Animate Move</button></div>
+
+        <div class="field">
+          <label for="sim-algorithm">Type an algorithm</label>
+          <textarea id="sim-algorithm" placeholder="R U R' U' F2 M E' x"></textarea>
+        </div>
+        <div class="controls">
+          <button id="sim-run-algorithm">Run Algorithm</button>
+          <button id="sim-pause">Pause</button>
+          <button id="sim-undo">Undo Last Move</button>
+        </div>
         <h3>Move sequence</h3>
         <div class="move-list" id="sim-moves"></div>
-        <button id="sim-undo" style="margin-top:12px">Undo last move</button>
       </div>
     </div>
   </div>
@@ -193,7 +236,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
 <section class="page" id="trainer-page">
   <div class="card">
     <h2>Algorithm Trainer</h2>
-    <p class="muted">Study a case, identify its pattern, and practice its algorithm.</p>
+    <p class="muted">Study a case, recognize its pattern, and practice its algorithm.</p>
     <div class="controls">
       <label class="label" for="trainer-category">Category</label>
       <select id="trainer-category">
@@ -213,13 +256,60 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
         <div class="controls">
           <button id="show-algorithm">Show Algorithm</button>
           <button id="next-case">Next Case</button>
+          <button id="practice-case">Send to Simulator</button>
         </div>
-        <p class="muted" id="trainer-note">Use the diagram as a visual recognition aid.</p>
+        <p class="muted" id="trainer-note">Try to recognize the pattern before revealing the algorithm.</p>
       </div>
     </div>
+    <p class="muted">
+      Reference diagrams and full case collections:
+      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/oll-algorithms.pdf" target="_blank" rel="noopener">OLL</a> ·
+      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/pll-algorithms.pdf" target="_blank" rel="noopener">PLL</a> ·
+      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/f2l.pdf" target="_blank" rel="noopener">F2L</a>
+    </p>
+  </div>
+</section>
+
+<section class="page" id="settings-page">
+  <div class="card">
+    <h2>Cube Settings</h2>
+    <div class="setting-row">
+      <div><strong>Cube size</strong><div class="muted">Choose the simulator cube size.</div></div>
+      <select id="setting-cube-size">
+        <option value="3">3×3</option>
+        <option value="2">2×2</option>
+        <option value="4">4×4</option>
+        <option value="5">5×5</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <div><strong>Move animation speed</strong><div class="muted">Adjust simulator animation duration.</div></div>
+      <select id="setting-animation-speed">
+        <option value="500">Slow</option>
+        <option value="260" selected>Normal</option>
+        <option value="120">Fast</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <div><strong>Timer inspection</strong><div class="muted">Enable a 15-second inspection period.</div></div>
+      <input type="checkbox" id="setting-inspection">
+    </div>
+    <div class="setting-row">
+      <div><strong>Confetti on personal best</strong><div class="muted">Celebrate a new best single.</div></div>
+      <input type="checkbox" id="setting-confetti" checked>
+    </div>
+    <div class="setting-row">
+      <div><strong>Timer precision</strong><div class="muted">Choose the displayed decimal precision.</div></div>
+      <select id="setting-precision">
+        <option value="2">Hundredths</option>
+        <option value="3">Thousandths</option>
+      </select>
+    </div>
+    <p class="muted">Settings are stored in this browser.</p>
   </div>
 </section>
 </main>
+
 <footer>Cube.Timer · Your solves are saved in this browser.</footer>
 <script src="script.js"></script>
 </body>
