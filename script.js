@@ -1449,37 +1449,46 @@ const TRAINER_CASES = {
   OLL: [
     {
       number: 1,
-      name: "Anti-Sune",
-      group: "Sune / Anti-Sune",
-      description: "One corner is twisted the opposite direction from a Sune pattern.",
-      recognition: "Look for a single yellow corner on the top face, with the adjacent stickers forming an anti-clockwise pattern.",
-      alg: "R U2 R' U' R U' R'",
+      name: "ALL Yellow",
+      group: "Dot / Bar",
+      description: "All top face stickers are yellow; the last layer is already oriented.",
+      recognition: "The entire top face is solved. This is the simplest OLL state and usually appears when the cross and corners are already aligned.",
       setup: "",
-      solution: "R U2 R' U' R U' R'",
-      probability: "~2.8%",
-      pattern: [0,0,0,0,1,0,1,1,0],
+      solution: "(Solved)",
+      probability: "~0.7%",
+      pattern: [1,1,1,1,1,1,1,1,1],
       type: "OLL"
     },
     {
       number: 2,
-      name: "Sune",
+      name: "Anti-Sune",
       group: "Sune / Anti-Sune",
-      description: "A classic one-corner orientation case with an L-shaped yellow pattern.",
-      recognition: "The yellow stickers form a clock-wise corner and the remaining top face is mostly grey.",
-      alg: "R U R' U R U2 R'",
+      description: "One corner is twisted in the opposite direction from a Sune pattern.",
+      recognition: "A single yellow corner remains, and the adjacent yellow stickers trace an anti-clockwise turn.",
       setup: "",
-      solution: "R U R' U R U2 R'",
-      probability: "~4.0%",
-      pattern: [0,0,0,0,1,1,0,1,0],
+      solution: "R U2 R' U' R U' R'",
+      probability: "~3.2%",
+      pattern: [0,0,0,0,1,1,1,1,0],
       type: "OLL"
     },
     {
       number: 3,
+      name: "Sune",
+      group: "Sune / Anti-Sune",
+      description: "A classic one-corner orientation case with a clock-wise yellow corner.",
+      recognition: "The yellow stickers form a single clockwise corner with a visible L or hook shape.",
+      setup: "",
+      solution: "R U R' U R U2 R'",
+      probability: "~4.8%",
+      pattern: [0,0,0,1,1,0,0,1,1],
+      type: "OLL"
+    },
+    {
+      number: 4,
       name: "Headlights",
       group: "Bar / Line",
-      description: "The top face has a pair of oriented edge stickers on the front and back.",
-      recognition: "Two opposite top edges are solved and the other four are not; this creates a visible headlight look.",
-      alg: "R U2 R2 U' R2 U' R2 U2 R",
+      description: "Two opposite edge stickers are oriented on the top face.",
+      recognition: "The top face has a pair of yellow stickers on front and back, creating a headlight look.",
       setup: "",
       solution: "R U2 R2 U' R2 U' R2 U2 R",
       probability: "~2.6%",
@@ -1487,90 +1496,83 @@ const TRAINER_CASES = {
       type: "OLL"
     },
     {
-      number: 4,
+      number: 5,
       name: "T-Pattern",
       group: "T / C / Bomb",
-      description: "An oriented T-shaped arrangement of yellow stickers on the top face.",
-      recognition: "There are three yellow stickers touching in a T, with the center of the top face oriented yellow.",
-      alg: "R U R' U' R' F R2 U' R' U' R U R' F'",
+      description: "Three yellow stickers form a T on the top face.",
+      recognition: "The face has a central yellow bar down the middle with a matching side sticker, forming a T.",
       setup: "",
       solution: "R U R' U' R' F R2 U' R' U' R U R' F'",
-      probability: "~5.2%",
+      probability: "~5.4%",
       pattern: [0,1,0,1,1,1,0,1,0],
       type: "OLL"
     },
     {
-      number: 5,
+      number: 6,
       name: "P-Pattern",
       group: "P / Pi",
-      description: "A paired corner and edge pattern that looks like a P shape.",
-      recognition: "Two adjacent yellow stickers on the top face create a P-like shape with the center side sticker unmatched.",
-      alg: "R2 D' R U2 R' D R U2 R",
+      description: "A corner and adjacent edge make a P-like arrangement.",
+      recognition: "The yellow stickers form an lopsided shape with the side and corner facing the same edge.",
       setup: "",
-      solution: "R2 D' R U2 R' D R U2 R",
-      probability: "~2.9%",
-      pattern: [1,0,0,1,1,1,0,0,0],
-      type: "OLL"
-    },
-    {
-      number: 6,
-      name: "C-Pattern",
-      group: "T / C / Bomb",
-      description: "A nearly solved top layer with a yellow C shape.",
-      recognition: "A loop of three yellow stickers remains open on one side, resembling a C.",
-      alg: "R U2 R' U' R U' R'",
-      setup: "",
-      solution: "R U2 R' U' R U' R'",
-      probability: "~2.2%",
-      pattern: [0,0,1,0,1,1,1,0,0],
+      solution: "R U2 R2 U' R2 U' R2 U2 R",
+      probability: "~2.4%",
+      pattern: [1,1,0,1,1,1,0,0,0],
       type: "OLL"
     },
     {
       number: 7,
-      name: "L-Pattern",
-      group: "L / U / Fish",
-      description: "A small L on the top face that is commonly solved with a quick trigger.",
-      recognition: "Two yellow stickers form an L in one corner and the remaining face is largely grey.",
-      alg: "R U2 R' U' R U' R'",
+      name: "C-Pattern",
+      group: "T / C / Bomb",
+      description: "A subtle C shape remains on the top face.",
+      recognition: "Three yellow stickers form a curved C, with one open side on the front or back.",
       setup: "",
       solution: "R U2 R' U' R U' R'",
-      probability: "~2.5%",
-      pattern: [1,0,0,1,1,0,0,0,0],
+      probability: "~2.1%",
+      pattern: [0,0,1,0,1,1,1,0,0],
       type: "OLL"
     },
     {
       number: 8,
-      name: "H-Pattern",
-      group: "H / Lights",
-      description: "A straight bar of yellow stickers across the face, sometimes called H.",
-      recognition: "Two yellow stickers on the left and right edges line up with the center, making a cross-like H.",
-      alg: "R U R' U R U2 R' U2 R U' R'",
+      name: "L-Pattern",
+      group: "L / U / Fish",
+      description: "A small L shape remains on the top face.",
+      recognition: "Two yellow stickers form an L in one corner and the rest of the face is grey.",
       setup: "",
-      solution: "R U R' U R U2 R' U2 R U' R'",
-      probability: "~3.1%",
-      pattern: [0,1,0,0,1,0,0,1,0],
+      solution: "R U2 R' U' R U' R'",
+      probability: "~3.0%",
+      pattern: [1,0,0,1,1,0,0,1,0],
       type: "OLL"
     },
     {
       number: 9,
-      name: "Fish",
-      group: "L / U / Fish",
-      description: "An asymmetrical pattern with a fish-like shape built from yellow stickers.",
-      recognition: "The three-yellow arrangement resembles a fish shape, usually with one side extended.",
-      alg: "R U R' U' R' F R F'",
+      name: "H-Pattern",
+      group: "H / Lights",
+      description: "The top face looks like an H or two bars of yellow stickers.",
+      recognition: "Yellow is centered with matching left/right pairs, resembling a solid H.",
       setup: "",
-      solution: "R U R' U' R' F R F'",
-      probability: "~2.0%",
-      pattern: [0,1,1,1,1,0,0,0,0],
+      solution: "R U R' U R U2 R' U2 R U' R'",
+      probability: "~3.7%",
+      pattern: [0,1,0,1,1,1,0,1,0],
       type: "OLL"
     },
     {
       number: 10,
+      name: "Fish",
+      group: "L / U / Fish",
+      description: "A fish-like pattern spreads across the top face.",
+      recognition: "The yellow stickers form a curved or angled tail-like shape that resembles a fish.",
+      setup: "",
+      solution: "R U R' U' R' F R F'",
+      probability: "~2.2%",
+      pattern: [0,1,1,1,1,0,0,0,0],
+      type: "OLL"
+    },
+    {
+      number: 11,
       name: "U-Pattern",
       group: "L / U / Fish",
-      description: "The top face has a U-like arrangement that is solved by a simple trigger.",
-      recognition: "A large U-shape remains on the face, with yellow stickers at the top and sides.",
-      alg: "R U2 R2 U' R2 U' R2 U2 R",
+      description: "An asymmetrical U-like arrangement on the top face.",
+      recognition: "The top face resembles a U with a central strip and one side missing.",
       setup: "",
       solution: "R U2 R2 U' R2 U' R2 U2 R",
       probability: "~2.8%",
@@ -1578,16 +1580,15 @@ const TRAINER_CASES = {
       type: "OLL"
     },
     {
-      number: 11,
-      name: "Flash",
+      number: 12,
+      name: "Pi-Pattern",
       group: "Pi / Bar",
-      description: "A bar-and-corner pattern that is often solved with a right-hand trigger.",
-      recognition: "The face shows a bar and a corner with a visible broken line.",
-      alg: "R U2 R' U' R U' R'",
+      description: "Two adjacent yellow corners create a Pi-like shape.",
+      recognition: "You can see a distinctive left-right bar with a corner sitting on one side like a Pi.",
       setup: "",
       solution: "R U2 R' U' R U' R'",
-      probability: "~1.5%",
-      pattern: [0,1,0,0,1,1,1,0,0],
+      probability: "~1.7%",
+      pattern: [1,0,0,0,1,1,1,0,0],
       type: "OLL"
     }
   ],
@@ -1597,12 +1598,11 @@ const TRAINER_CASES = {
       number: "Aa",
       name: "Aa Perm",
       group: "Adjacent Cycles",
-      description: "Three adjacent corners cycle around the cube, leaving the top face aesthetically similar.",
-      recognition: "Look for a headlight pattern plus a shifted corner pair; the affected corners are adjacent.",
-      alg: "x R' U R' D2 R U' R' D2 R2 x'",
+      description: "Three corners cycle in a 3-cycle while the rest of the top layer is unchanged.",
+      recognition: "The top face may look solved, but one or more corners are rotated around the cube. This is an adjacent 3-cycle.",
       setup: "",
       solution: "x R' U R' D2 R U' R' D2 R2 x'",
-      probability: "~7.1%",
+      probability: "~7.0%",
       pattern: [0,1,0,1,1,1,0,1,0],
       type: "PLL"
     },
@@ -1610,12 +1610,11 @@ const TRAINER_CASES = {
       number: "Ab",
       name: "Ab Perm",
       group: "Adjacent Cycles",
-      description: "The opposite adjacent corner cycle is solved by a mirrored version of Aa.",
-      recognition: "The top face looks like a bar with a shifted corner and the affected corners are adjacent.",
-      alg: "x' R U' R D2 R' U R D2 R2 x",
+      description: "The opposite adjacent corner cycle; mirrored from Aa.",
+      recognition: "A 3-cycle affects the adjacent corners but in the opposite orientation.",
       setup: "",
       solution: "x' R U' R D2 R' U R D2 R2 x",
-      probability: "~6.4%",
+      probability: "~6.3%",
       pattern: [0,1,0,1,1,1,0,1,0],
       type: "PLL"
     },
@@ -1623,12 +1622,11 @@ const TRAINER_CASES = {
       number: "E",
       name: "E Perm",
       group: "Edges",
-      description: "The four top-layer edges are permuted with a central 3-cycle pattern.",
-      recognition: "This is a pure edge permutation; the corners are already solved, and the top face has a bar-like pattern.",
-      alg: "x' R U' R D2 R' U R D2 R2 x",
+      description: "A pure edge permutation with the corners already solved.",
+      recognition: "The corners are solved and the top face shows the classic edge swap pattern.",
       setup: "",
       solution: "x' R U' R D2 R' U R D2 R2 x",
-      probability: "~5.6%",
+      probability: "~5.5%",
       pattern: [0,1,0,1,1,1,0,1,0],
       type: "PLL"
     },
@@ -1636,12 +1634,11 @@ const TRAINER_CASES = {
       number: "T",
       name: "T Perm",
       group: "Swap 2 corners + 2 edges",
-      description: "Two corners and two edges swap, leaving the rest of the face intact.",
-      recognition: "A central line or corner shape is preserved, but a diagonal pair is swapped.",
-      alg: "R U R' U' R' F R2 U' R' U' R U R' F'",
+      description: "Two corners and two edges swap with each other.",
+      recognition: "The top face often shows a diagonal swap with a single bar or headlight cue.",
       setup: "",
       solution: "R U R' U' R' F R2 U' R' U' R U R' F'",
-      probability: "~8.3%",
+      probability: "~8.2%",
       pattern: [1,0,1,0,1,0,1,0,1],
       type: "PLL"
     },
@@ -1649,12 +1646,11 @@ const TRAINER_CASES = {
       number: "Ua",
       name: "Ua Perm",
       group: "U / Corner Cycles",
-      description: "A U-turn style perm of the top-layer pieces with a 3-cycle effect.",
-      recognition: "The top face has a visible U-shape, usually with one corner and edge pair moved correctly.",
-      alg: "R2 U R U R' U' R' U' R' U R'",
+      description: "A 3-cycle of the upper layer in one direction.",
+      recognition: "The top face shows a U-shape or a shifted bar pattern and the affected pieces all cycle in one direction.",
       setup: "",
       solution: "R2 U R U R' U' R' U' R' U R'",
-      probability: "~9.0%",
+      probability: "~9.1%",
       pattern: [0,1,0,1,1,1,0,1,0],
       type: "PLL"
     },
@@ -1662,9 +1658,8 @@ const TRAINER_CASES = {
       number: "Ub",
       name: "Ub Perm",
       group: "U / Corner Cycles",
-      description: "The opposite U-permutation of the top face.",
-      recognition: "The same general pattern as Ua, but mirrored around the front-right axis.",
-      alg: "R2 U' R' U' R U R U R U' R",
+      description: "The mirrored version of Ua perm.",
+      recognition: "This is the same shape but mirrored around the face, with the cycle running in the opposite direction.",
       setup: "",
       solution: "R2 U' R' U' R U R U R U' R",
       probability: "~8.6%",
@@ -1675,12 +1670,47 @@ const TRAINER_CASES = {
       number: "H",
       name: "H Perm",
       group: "Edges",
-      description: "Two pairs of opposite edges swap as a set.",
-      recognition: "The top face shows a headlight-like pattern, but the edge swap is only present as a pair.",
-      alg: "M2 U M2 U2 M2 U M2",
+      description: "Two opposite edge pairs swap with each other.",
+      recognition: "The top face looks like a headlight or bar with a symmetric edge swap, but no corners are affected.",
       setup: "",
       solution: "M2 U M2 U2 M2 U M2",
-      probability: "~2.3%",
+      probability: "~2.7%",
+      pattern: [0,1,0,1,1,1,0,1,0],
+      type: "PLL"
+    },
+    {
+      number: "Z",
+      name: "Z Perm",
+      group: "Edges",
+      description: "Two adjacent edges swap and the opposite pair swaps with them.",
+      recognition: "This often appears as a zig-zag or alternating pattern with one front/back bar.",
+      setup: "",
+      solution: "M2 U M2 U M' U2 M2 U2 M' U2",
+      probability: "~3.4%",
+      pattern: [1,0,1,0,1,0,1,0,1],
+      type: "PLL"
+    },
+    {
+      number: "Jb",
+      name: "Jb Perm",
+      group: "J / L Perms",
+      description: "A corner and nearby edge pair cycle in a J-like pattern.",
+      recognition: "Look for a single unsolved corner, with the neighboring edge pair twisted in a J-shape.",
+      setup: "",
+      solution: "R U R' F' R U R' U' R' F R2 U' R'",
+      probability: "~4.6%",
+      pattern: [1,0,0,1,1,0,0,1,1],
+      type: "PLL"
+    },
+    {
+      number: "Ja",
+      name: "Ja Perm",
+      group: "J / L Perms",
+      description: "The mirrored J-permutation of the top layer.",
+      recognition: "This is the opposite orientation of Jb, usually with a single corner shifted opposite the front face.",
+      setup: "",
+      solution: "R' U L' U2 R U' L R' U L' U2 R U' L",
+      probability: "~3.8%",
       pattern: [0,1,0,1,1,1,0,1,0],
       type: "PLL"
     }
@@ -1691,11 +1721,10 @@ const TRAINER_CASES = {
       number: 1,
       name: "Solved Pair",
       group: "Basic Insertions",
-      description: "A corner and matching edge are already paired and can be slotted without rotation.",
-      recognition: "The pair sits in the correct slot and only needs a final alignment nudge.",
-      alg: "R U' R'",
+      description: "Corner and edge are already paired and can be inserted without a setup.",
+      recognition: "The corner and matching edge are already together in the correct slot.",
       setup: "",
-      solution: "R U' R'",
+      solution: "(insert directly)",
       probability: "n/a",
       pattern: [0,0,0,0,1,0,0,0,0],
       type: "F2L"
@@ -1704,11 +1733,10 @@ const TRAINER_CASES = {
       number: 2,
       name: "Right Pair Insert",
       group: "Basic Insertions",
-      description: "The corner-edge pair lies on the right side of the cube and is inserted with a standard trigger.",
-      recognition: "The corner sits in the right slot or just above it; the edge is already matched to the same face.",
-      alg: "U R U' R'",
-      setup: "",
-      solution: "U R U' R'",
+      description: "A standard right-side pair insert with a small setup move.",
+      recognition: "Corner and edge are attached on the right side and the target slot is just above the correct position.",
+      setup: "U",
+      solution: "R U' R'",
       probability: "n/a",
       pattern: [0,1,0,0,1,0,0,0,0],
       type: "F2L"
@@ -1717,11 +1745,10 @@ const TRAINER_CASES = {
       number: 3,
       name: "Left Pair Insert",
       group: "Basic Insertions",
-      description: "The pair is on the left side and uses the mirrored insertion pattern.",
-      recognition: "The edge and corner are paired on the left side and can be inserted with a left-hand trigger.",
-      alg: "U' L' U L",
-      setup: "",
-      solution: "U' L' U L",
+      description: "The mirrored insertion for a left-side pair.",
+      recognition: "The pair sits on the left side and inserts using a mirrored trigger.",
+      setup: "U'",
+      solution: "L' U L",
       probability: "n/a",
       pattern: [0,1,0,0,1,0,0,0,0],
       type: "F2L"
@@ -1730,204 +1757,128 @@ const TRAINER_CASES = {
       number: 4,
       name: "Pair Above Slot",
       group: "Above Slot",
-      description: "The pair is directly above its target slot and is inserted by a short setup move.",
-      recognition: "The corner sits above the correct position and the edge is attached to it.",
-      alg: "U R U' R' U' F' U F",
-      setup: "",
-      solution: "U R U' R' U' F' U F",
+      description: "The pair sits directly above the slot and needs a small alignment before insertion.",
+      recognition: "Pair is above the correct target, usually on the front-right or front-left.",
+      setup: "U",
+      solution: "R U' R' U' F' U F",
       probability: "n/a",
       pattern: [0,0,0,0,1,0,0,1,0],
+      type: "F2L"
+    },
+    {
+      number: 5,
+      name: "Corner in Slot",
+      group: "Corner-first",
+      description: "The corner is already in the slot and the edge must be attached to it.",
+      recognition: "The corner is in place; only the edge still needs to be paired and inserted.",
+      setup: "U",
+      solution: "U R U' R'",
+      probability: "n/a",
+      pattern: [1,0,0,0,1,0,0,0,0],
+      type: "F2L"
+    },
+    {
+      number: 6,
+      name: "Edge in Slot",
+      group: "Edge-first",
+      description: "The edge is correctly aligned and the corner is brought to it.",
+      recognition: "The edge is in the target slot with the matching corner still above the pair.",
+      setup: "U'",
+      solution: "U' L' U L",
+      probability: "n/a",
+      pattern: [0,1,0,0,1,0,1,0,0],
       type: "F2L"
     }
   ]
 };
 
-const trainerCaseIndex = {
-  OLL: 0,
-  PLL: 0,
-  F2L: 0
-};
+let currentTrainerCase = null;
+let algorithmVisible = false;
+let trainerCaseIndex = { OLL: 0, PLL: 0, F2L: 0 };
 
-function getTrainerCategoryCases() {
-  const category = $("trainer-category").value;
-  return TRAINER_CASES[category] || [];
+function normalizePattern(pattern, count = 9) {
+  const arr = Array.isArray(pattern) ? pattern.slice(0, count) : [];
+  while (arr.length < count) arr.push(0);
+  return arr;
 }
 
-function getCurrentFilteredCases() {
-  const category = $("trainer-category").value;
-  const search = ($("trainer-search")?.value || "").trim().toLowerCase();
-  const group = $("trainer-group")?.value || "all";
-
-  return (TRAINER_CASES[category] || []).filter(item => {
-    const matchesGroup = group === "all" || item.group === group;
-    const haystack = [
-      item.name,
-      item.number,
-      item.group,
-      item.alg,
-      item.description,
-      item.recognition
-    ].join(" ").toLowerCase();
-    const matchesSearch = !search || haystack.includes(search);
-    return matchesGroup && matchesSearch;
-  });
-}
-
-function populateTrainerGroups() {
-  const category = $("trainer-category").value;
-  const select = $("trainer-group");
-  const groups = new Set((TRAINER_CASES[category] || []).map(item => item.group));
-
-  const current = select.value || "all";
-  select.replaceChildren();
-
-  const allOption = document.createElement("option");
-  allOption.value = "all";
-  allOption.textContent = "All groups";
-  select.appendChild(allOption);
-
-  [...groups].sort().forEach(group => {
-    const option = document.createElement("option");
-    option.value = group;
-    option.textContent = group;
-    if (group === current) option.selected = true;
-    select.appendChild(option);
-  });
-
-  if (!current || ![...groups].includes(current)) {
-    select.value = "all";
-  }
-}
-
-function updateTrainerCaseSelector() {
-  const filtered = getCurrentFilteredCases();
-  const select = $("trainer-case");
-  const currentIndex = trainerCaseIndex[$("trainer-category").value] || 0;
-
-  select.replaceChildren();
-
-  filtered.forEach((item, index) => {
-    const option = document.createElement("option");
-    option.value = String(index);
-    option.textContent = `${item.number ? item.number + " - " : ""}${item.name}`;
-    select.appendChild(option);
-  });
-
-  const safeIndex = filtered.length ? Math.min(currentIndex, filtered.length - 1) : 0;
-  trainerCaseIndex[$("trainer-category").value] = safeIndex;
-
-  if (filtered.length === 0) {
-    $("case-title").textContent = "No matching cases";
-    $("case-description").textContent = "Try a different filter or search.";
-    $("case-recognition").textContent = "";
-    $("case-number").textContent = "Case #";
-    $("case-group").textContent = "Group";
-    $("case-probability").textContent = "Probability";
-    $("case-algorithm").textContent = "No result";
-    $("case-image").innerHTML = "";
-    return;
-  }
-
-  select.value = String(safeIndex);
-  showTrainerCase(filtered[safeIndex]);
-}
-
-function buildColor(value) {
+function colorForCell(value) {
   if (value === 1) return "#f3d343";
-  if (value === 2) return "#67d3ff";
-  if (value === 3) return "#9cf5c0";
-  return "#3c4657";
+  if (value === 2) return "#7ee7c1";
+  if (value === 3) return "#87a6ff";
+  return "#2b3340";
 }
 
-function makeTopFacePatternGrid(pattern, options = {}) {
-  const cellSize = 32;
-  const gap = 4;
-  const cols = 3;
-  const rows = 3;
-  const offsetX = 10;
-  const offsetY = 10;
+function buildTopFaceDiagram(pattern, options = {}) {
+  const cells = normalizePattern(pattern, 9);
+  const front = options.front || "#79e4c6";
+  const right = options.right || "#e6bd69";
+  const left = options.left || "#6aa7ff";
 
-  let cells = "";
-
-  pattern.forEach((value, idx) => {
-    const x = offsetX + (idx % cols) * (cellSize + gap);
-    const y = offsetY + Math.floor(idx / rows) * (cellSize + gap);
-    const fill = buildColor(value);
-
-    cells += `
-      <rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" rx="5"
-        fill="${fill}" stroke="#1f2936" stroke-width="2" />
-    `;
+  const map = [];
+  cells.forEach((cell, idx) => {
+    const row = Math.floor(idx / 3);
+    const col = idx % 3;
+    const x = 30 + col * 38;
+    const y = 30 + row * 38;
+    map.push(
+      `<rect x="${x}" y="${y}" width="30" height="30" rx="5" fill="${colorForCell(cell)}" stroke="#243041" stroke-width="2"/>`
+    );
   });
 
-  const sideColor = options.sideColor || "#79e4c6";
-  const sideStrip = options.sideStrip || {}
-
   return `
-    <svg viewBox="0 0 240 240" role="img" aria-label="Top face case diagram">
-      <rect x="0" y="0" width="240" height="240" rx="12" fill="#111722" stroke="#303a4b" stroke-width="2"/>
-      <rect x="35" y="35" width="128" height="128" rx="8" fill="#252d3b"/>
-      ${cells}
-      <rect x="170" y="35" width="26" height="128" rx="7" fill="${sideColor}" opacity="0.95"/>
-      <rect x="35" y="170" width="128" height="26" rx="7" fill="${sideColor}" opacity="0.95"/>
-      <rect x="35" y="8" width="128" height="18" rx="6" fill="#3d4c5c"/>
-      <rect x="8" y="35" width="18" height="128" rx="6" fill="#3d4c5c"/>
-      <rect x="170" y="170" width="26" height="26" rx="6" fill="#3d4c5c"/>
+    <svg viewBox="0 0 260 220" role="img" aria-label="Top-face case diagram">
+      <rect x="0" y="0" width="260" height="220" rx="12" fill="#111722" stroke="#303a4b" stroke-width="2"/>
+      <rect x="35" y="25" width="110" height="110" rx="7" fill="#1c2430"/>
+      ${map.join("")}
+      <rect x="155" y="25" width="22" height="110" rx="6" fill="${right}" opacity="0.9"/>
+      <rect x="35" y="145" width="110" height="22" rx="6" fill="${front}" opacity="0.9"/>
+      <rect x="35" y="175" width="110" height="18" rx="4" fill="#2f3b4a"/>
+      <rect x="10" y="25" width="18" height="110" rx="4" fill="#2f3b4a"/>
+      <rect x="178" y="25" width="24" height="110" rx="5" fill="${left}" opacity="0.9"/>
     </svg>
   `;
 }
 
-function makeOLLDiagram(caseData) {
-  const pattern = caseData.pattern || [0,0,0,0,0,0,0,0,0];
-  const accent = caseData.group.includes("Sune") ? "#f3d343" : "#79e4c6";
-  return makeTopFacePatternGrid(pattern, { sideColor: accent });
-}
+function buildPLLDiagram(pattern) {
+  const cells = normalizePattern(pattern, 9);
+  const pieces = cells.map((cell, idx) => {
+    const row = Math.floor(idx / 3);
+    const col = idx % 3;
+    return `<rect x="${40 + col * 44}" y="${30 + row * 44}" width="34" height="34" rx="5" fill="${colorForCell(cell)}" stroke="#243041" stroke-width="2"/>`;
+  }).join("");
 
-function makePLLDiagram(caseData) {
-  const pattern = caseData.pattern || [0,0,0,0,0,0,0,0,0];
-  const svg = `
-    <svg viewBox="0 0 300 220" role="img" aria-label="PLL case pattern">
+  return `
+    <svg viewBox="0 0 300 220" role="img" aria-label="PLL case diagram">
       <rect x="0" y="0" width="300" height="220" rx="12" fill="#111722" stroke="#303a4b" stroke-width="2"/>
-      <rect x="38" y="45" width="150" height="150" rx="8" fill="#252d3b"/>
-      ${[0,1,2,3,4,5,6,7,8].map(index => {
-        const x = 38 + (index % 3) * 48;
-        const y = 45 + Math.floor(index / 3) * 48;
-        const fill = buildColor(pattern[index]);
-        return `<rect x="${x}" y="${y}" width="40" height="40" rx="5" fill="${fill}" stroke="#1d2631" stroke-width="2" />`;
-      }).join("")}
-      <rect x="198" y="45" width="25" height="150" rx="6" fill="#3c63d6"/>
-      <rect x="228" y="45" width="25" height="150" rx="6" fill="#f1c458"/>
-      <rect x="258" y="45" width="25" height="150" rx="6" fill="#7ee7c1"/>
-      <path d="M 38 200 L 78 156 L 118 200 Z" fill="none" stroke="#edb95d" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 118 200 L 178 150" fill="none" stroke="#edb95d" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 118 200 L 158 168" fill="none" stroke="#edb95d" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="78" cy="156" r="6" fill="#edb95d"/>
-      <circle cx="118" cy="200" r="6" fill="#edb95d"/>
-      <circle cx="178" cy="150" r="6" fill="#edb95d"/>
+      <rect x="25" y="25" width="140" height="140" rx="8" fill="#1c2430"/>
+      ${pieces}
+      <rect x="180" y="28" width="26" height="134" rx="6" fill="#7ee7c1" opacity="0.9"/>
+      <rect x="210" y="28" width="26" height="134" rx="6" fill="#e6bd69" opacity="0.9"/>
+      <rect x="240" y="28" width="26" height="134" rx="6" fill="#6aa7ff" opacity="0.9"/>
+      <path d="M 60 180 L 110 150 L 150 180" stroke="#f3d343" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 110 150 L 150 110" stroke="#f3d343" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="60" cy="180" r="5" fill="#f3d343"/>
+      <circle cx="110" cy="150" r="5" fill="#f3d343"/>
+      <circle cx="150" cy="110" r="5" fill="#f3d343"/>
     </svg>
   `;
-
-  return svg;
 }
 
-function makeF2LDiagram(caseData) {
-  const accent = "#79e4c6";
-  const accent2 = "#f3d343";
-
+function buildF2LDiagram() {
   return `
-    <svg viewBox="0 0 280 220" role="img" aria-label="F2L case diagram">
-      <rect x="0" y="0" width="280" height="220" rx="12" fill="#111722" stroke="#303a4b" stroke-width="2"/>
-      <polygon points="60,120 140,80 140,160 60,200" fill="#1f2935" stroke="#40536a" stroke-width="2"/>
-      <polygon points="140,80 220,120 220,200 140,160" fill="#233548" stroke="#40536a" stroke-width="2"/>
-      <polygon points="60,120 140,80 220,120 140,160" fill="#2c3b4d" stroke="#40536a" stroke-width="2"/>
-      <polygon points="140,80 140,160 220,200 220,120" fill="#3a4b5f" stroke="#40536a" stroke-width="2"/>
-      <rect x="86" y="102" width="32" height="32" rx="4" fill="${accent2}" stroke="#d9ad33" stroke-width="2"/>
-      <rect x="156" y="120" width="32" height="32" rx="4" fill="${accent}" stroke="#68d9b9" stroke-width="2"/>
-      <path d="M 120 160 L 166 138" stroke="#edf2fa" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="118" cy="147" r="7" fill="#edf2fa"/>
-      <circle cx="167" cy="138" r="7" fill="#edf2fa"/>
-      <text x="110" y="45" fill="#c8d5e8" font-size="14" font-family="system-ui">Corner + edge</text>
-      <text x="70" y="198" fill="#c8d5e8" font-size="12" font-family="system-ui">Target slot</text>
+    <svg viewBox="0 0 300 220" role="img" aria-label="F2L case diagram">
+      <rect x="0" y="0" width="300" height="220" rx="12" fill="#111722" stroke="#303a4b" stroke-width="2"/>
+      <polygon points="50,130 150,70 150,170 50,230" fill="#1f2a36" stroke="#40536a" stroke-width="2"/>
+      <polygon points="150,70 250,130 250,230 150,170" fill="#2a3a4d" stroke="#40536a" stroke-width="2"/>
+      <polygon points="50,130 150,70 250,130 150,170" fill="#2d3d53" stroke="#40536a" stroke-width="2"/>
+      <rect x="88" y="110" width="35" height="35" rx="5" fill="#f3d343" stroke="#d7a81a" stroke-width="2"/>
+      <rect x="165" y="136" width="35" height="35" rx="5" fill="#79e4c6" stroke="#58c9a7" stroke-width="2"/>
+      <path d="M 120 150 L 165 150" stroke="#edf2fa" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="120" cy="150" r="7" fill="#edf2fa"/>
+      <circle cx="165" cy="150" r="7" fill="#edf2fa"/>
+      <text x="70" y="50" fill="#dcdfe5" font-size="12" font-family="system-ui">corner + edge</text>
+      <text x="165" y="200" fill="#dcdfe5" font-size="12" font-family="system-ui">target slot</text>
     </svg>
   `;
 }
@@ -1938,25 +1889,103 @@ function renderCaseDiagram(caseData) {
     return;
   }
 
-  const type = caseData.type || "OLL";
-
-  if (type === "OLL") {
-    $("case-image").innerHTML = makeOLLDiagram(caseData);
+  if (caseData.type === "OLL") {
+    $("case-image").innerHTML = buildTopFaceDiagram(caseData.pattern, { front: "#7ee7c1", right: "#e6bd69", left: "#6aa7ff" });
     return;
   }
 
-  if (type === "PLL") {
-    $("case-image").innerHTML = makePLLDiagram(caseData);
+  if (caseData.type === "PLL") {
+    $("case-image").innerHTML = buildPLLDiagram(caseData.pattern);
     return;
   }
 
-  $("case-image").innerHTML = makeF2LDiagram(caseData);
+  $("case-image").innerHTML = buildF2LDiagram();
+}
+
+function getFilteredTrainerCases() {
+  const category = $("trainer-category").value;
+  const query = ($("trainer-search")?.value || "").trim().toLowerCase();
+  const group = $("trainer-group")?.value || "all";
+
+  return (TRAINER_CASES[category] || []).filter(item => {
+    const matchesGroup = group === "all" || item.group === group;
+    const haystack = [
+      item.name,
+      String(item.number || ""),
+      item.group,
+      item.description,
+      item.recognition,
+      item.solution,
+      item.setup,
+      item.alg
+    ].join(" ").toLowerCase();
+
+    const matchesQuery = !query || haystack.includes(query);
+    return matchesGroup && matchesQuery;
+  });
+}
+
+function populateTrainerGroups() {
+  const category = $("trainer-category").value;
+  const select = $("trainer-group");
+  const groups = [...new Set((TRAINER_CASES[category] || []).map(item => item.group))].sort();
+
+  const currentValue = select.value || "all";
+  select.replaceChildren();
+
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "All groups";
+  select.appendChild(allOption);
+
+  groups.forEach(group => {
+    const option = document.createElement("option");
+    option.value = group;
+    option.textContent = group;
+    if (group === currentValue) option.selected = true;
+    select.appendChild(option);
+  });
+
+  if (!groups.includes(currentValue)) {
+    select.value = "all";
+  }
+}
+
+function updateTrainerCaseSelector() {
+  const category = $("trainer-category").value;
+  const filtered = getFilteredTrainerCases();
+  const caseSelect = $("trainer-case");
+
+  caseSelect.replaceChildren();
+
+  if (!filtered.length) {
+    $("case-title").textContent = "No matching cases";
+    $("case-description").textContent = "Try a different group filter or search term.";
+    $("case-recognition").textContent = "";
+    $("case-number").textContent = "Case #";
+    $("case-group").textContent = "Group";
+    $("case-probability").textContent = "Probability";
+    $("case-algorithm").textContent = "No result";
+    $("case-image").innerHTML = "";
+    return;
+  }
+
+  filtered.forEach((item, index) => {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = `${item.number} - ${item.name}`;
+    caseSelect.appendChild(option);
+  });
+
+  const currentIndex = Math.min(trainerCaseIndex[category] || 0, filtered.length - 1);
+  trainerCaseIndex[category] = currentIndex;
+  caseSelect.value = String(currentIndex);
+
+  showTrainerCase(filtered[currentIndex]);
 }
 
 function showTrainerCase(caseData) {
-  if (!caseData) {
-    return;
-  }
+  if (!caseData) return;
 
   currentTrainerCase = caseData;
   algorithmVisible = false;
@@ -1967,36 +1996,10 @@ function showTrainerCase(caseData) {
   $("case-probability").textContent = caseData.probability || "Reference";
   $("case-description").textContent = caseData.description;
   $("case-recognition").textContent = caseData.recognition || "Use the visible sticker pattern to identify the case.";
-  $("case-algorithm").textContent = "Algorithm hidden";
+  $("case-algorithm").innerHTML = "Algorithm hidden";
   $("show-algorithm").textContent = "Show algorithm";
   $("trainer-note").textContent = "Try to recognize the case before revealing the algorithm.";
-
   renderCaseDiagram(caseData);
-}
-
-function updateTrainerSelectionFromFilter() {
-  const category = $("trainer-category").value;
-  const filtered = getCurrentFilteredCases();
-
-  if (!filtered.length) {
-    $("trainer-case").replaceChildren();
-    $("case-title").textContent = "No matching cases";
-    $("case-description").textContent = "Try a different search or category filter.";
-    $("case-algorithm").textContent = "No result";
-    $("case-recognition").textContent = "";
-    return;
-  }
-
-  trainerCaseIndex[category] = Math.min(trainerCaseIndex[category] || 0, filtered.length - 1);
-  const selected = filtered[trainerCaseIndex[category]];
-
-  $("trainer-case").value = String(filtered.indexOf(selected));
-  showTrainerCase(selected);
-}
-
-function seedTrainerCaseUI() {
-  populateTrainerGroups();
-  updateTrainerCaseSelector();
 }
 
 $("trainer-category").addEventListener("change", () => {
@@ -2013,9 +2016,9 @@ $("trainer-search").addEventListener("input", () => {
 });
 
 $("trainer-case").addEventListener("change", () => {
-  const filtered = getCurrentFilteredCases();
-  const index = Number($("trainer-case").value);
   const category = $("trainer-category").value;
+  const filtered = getFilteredTrainerCases();
+  const index = Number($("trainer-case").value);
 
   if (filtered[index]) {
     trainerCaseIndex[category] = index;
@@ -2025,29 +2028,27 @@ $("trainer-case").addEventListener("change", () => {
 
 $("prev-case").addEventListener("click", () => {
   const category = $("trainer-category").value;
-  const filtered = getCurrentFilteredCases();
+  const filtered = getFilteredTrainerCases();
   if (!filtered.length) return;
 
   trainerCaseIndex[category] = (trainerCaseIndex[category] - 1 + filtered.length) % filtered.length;
-  const selected = filtered[trainerCaseIndex[category]];
-  $("trainer-case").value = String(filtered.indexOf(selected));
-  showTrainerCase(selected);
+  $("trainer-case").value = String(trainerCaseIndex[category]);
+  showTrainerCase(filtered[trainerCaseIndex[category]]);
 });
 
 $("next-case").addEventListener("click", () => {
   const category = $("trainer-category").value;
-  const filtered = getCurrentFilteredCases();
+  const filtered = getFilteredTrainerCases();
   if (!filtered.length) return;
 
   trainerCaseIndex[category] = (trainerCaseIndex[category] + 1) % filtered.length;
-  const selected = filtered[trainerCaseIndex[category]];
-  $("trainer-case").value = String(filtered.indexOf(selected));
-  showTrainerCase(selected);
+  $("trainer-case").value = String(trainerCaseIndex[category]);
+  showTrainerCase(filtered[trainerCaseIndex[category]]);
 });
 
 $("random-case").addEventListener("click", () => {
   const category = $("trainer-category").value;
-  const filtered = getCurrentFilteredCases();
+  const filtered = getFilteredTrainerCases();
   if (!filtered.length) return;
 
   const nextIndex = Math.floor(Math.random() * filtered.length);
@@ -2060,18 +2061,20 @@ $("show-algorithm").addEventListener("click", () => {
   if (!currentTrainerCase) return;
 
   algorithmVisible = !algorithmVisible;
-  $("case-algorithm").textContent = algorithmVisible
-    ? currentTrainerCase.alg || "No algorithm provided for this case."
+  const setup = currentTrainerCase.setup ? `<div class="label">Setup</div><div class="algorithm">${currentTrainerCase.setup}</div>` : "";
+  const solution = currentTrainerCase.solution ? `<div class="label">Solution</div><div class="algorithm">${currentTrainerCase.solution}</div>` : "";
+
+  $("case-algorithm").innerHTML = algorithmVisible
+    ? `${setup}${solution || ""}` || "No algorithm provided."
     : "Algorithm hidden";
-  $("show-algorithm").textContent = algorithmVisible
-    ? "Hide algorithm"
-    : "Show algorithm";
+
+  $("show-algorithm").textContent = algorithmVisible ? "Hide algorithm" : "Show algorithm";
 });
 
 $("practice-case").addEventListener("click", () => {
   if (!currentTrainerCase) return;
 
-  $("sim-algorithm").value = currentTrainerCase.alg || "";
+  $("sim-algorithm").value = currentTrainerCase.solution || currentTrainerCase.alg || "";
 
   document.querySelectorAll(".tab").forEach(tab =>
     tab.classList.remove("active")
@@ -2087,7 +2090,7 @@ $("practice-case").addEventListener("click", () => {
   setTimeout(() => {
     createCube();
     resizeCubeRenderer();
-    runAlgorithm(currentTrainerCase.alg || "");
+    runAlgorithm($("sim-algorithm").value);
   }, 80);
 });
 
@@ -2095,13 +2098,11 @@ $("practice-case").addEventListener("click", () => {
    INITIALIZATION
 ========================================================= */
 
-let currentTrainerCase = null;
-let algorithmVisible = false;
-
 $("scramble").textContent = scramble;
 
 initializeSettings();
-seedTrainerCaseUI();
+populateTrainerGroups();
+updateTrainerCaseSelector();
 render();
 
 window.addEventListener("resize", () => {
