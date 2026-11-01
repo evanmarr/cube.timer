@@ -30,7 +30,7 @@ button,select{
 button:hover,select:hover{border-color:var(--accent);transform:translateY(-1px)}
 button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 button:active,select:active,input:active,textarea:active{transform:translateY(0)}
-select{appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px}
+select{appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:14px}
 select option{background:var(--panel);color:var(--text)}
 input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0;min-height:44px}
 textarea{width:100%;resize:vertical;min-height:85px}
@@ -83,14 +83,6 @@ canvas.graph{width:100%;height:100%;display:block}
 .move-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
 .move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace;min-height:32px;display:inline-flex;align-items:center}
 .move-chip.current{outline:1px solid var(--accent);color:var(--accent)}
-.trainer-layout{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(270px,1.2fr);gap:20px;align-items:center}
-.case-image{background:#111722;border:1px solid var(--border);border-radius:13px;min-height:230px;display:grid;place-items:center;padding:15px}
-.case-image svg{width:min(100%,320px);height:auto;display:block}
-.algorithm{font-family:monospace;font-size:19px;line-height:1.8;color:var(--accent);overflow-wrap:anywhere}
-.algorithm-block{margin-top:14px;padding:10px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:10px}
-.case-meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
-.meta-pill{background:var(--panel2);border:1px solid var(--border);color:var(--muted);padding:5px 8px;border-radius:999px;font-size:11px}
-.case-recognition{margin-top:8px;line-height:1.6;color:var(--text)}
 .field{display:grid;gap:7px;margin:12px 0;min-width:0}
 .field label{color:var(--muted);font-size:12px}
 .field input,.field select{width:100%}
@@ -112,7 +104,7 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
 .shortcuts-box{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:11px;background:var(--panel2);color:var(--text)}
 .shortcuts-box code{font-family:ui-monospace, SFMono-Regular, Menlo, monospace;color:var(--accent)}
 @media(max-width:760px){
-  .two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}
+  .two-col,.sim-layout{grid-template-columns:1fr}
   #cube-stage{height:320px}
   .setting-row{align-items:flex-start;flex-direction:column}
   .setting-row select{max-width:none;width:100%}
@@ -148,7 +140,6 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
   <button class="tab" data-page="history-page">History</button>
   <button class="tab" data-page="records-page">Records</button>
   <button class="tab" data-page="sim-page">3D Simulator</button>
-  <button class="tab" data-page="trainer-page">Algorithm Trainer</button>
   <button class="tab" data-page="settings-page">Cube Settings</button>
 </nav>
 
@@ -312,61 +303,6 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
   </div>
 </section>
 
-<section class="page" id="trainer-page">
-  <div class="card">
-    <h2>Algorithm Trainer</h2>
-    <p class="muted">Study a case, recognize the pattern, and practice the solution algorithm.</p>
-    <div class="controls" style="justify-content:flex-start; margin-top:0;">
-      <label class="label" for="trainer-category">Category</label>
-      <select id="trainer-category">
-        <option value="OLL">OLL</option>
-        <option value="PLL">PLL</option>
-        <option value="F2L">F2L</option>
-      </select>
-      <label class="label" for="trainer-group">Group</label>
-      <select id="trainer-group">
-        <option value="all">All groups</option>
-      </select>
-      <input id="trainer-search" type="search" placeholder="Search by name, number, or algorithm" aria-label="Search trainer cases" style="min-width:220px; flex:1; max-width:420px;">
-    </div>
-    <div class="controls" style="justify-content:flex-start; margin-top:12px;">
-      <button id="prev-case">Previous</button>
-      <button id="next-case">Next</button>
-      <button id="random-case">Random</button>
-      <button id="show-algorithm">Show algorithm</button>
-      <button id="practice-case">Send to simulator</button>
-    </div>
-    <div class="trainer-layout" style="margin-top:22px">
-      <div class="case-image" id="case-image"></div>
-      <div>
-        <h2 id="case-title">OLL Case</h2>
-        <div class="case-meta">
-          <span class="meta-pill" id="case-number">Case #</span>
-          <span class="meta-pill" id="case-group">Group</span>
-          <span class="meta-pill" id="case-probability">Probability</span>
-        </div>
-        <p id="case-description" class="muted"></p>
-        <p id="case-recognition" class="case-recognition"></p>
-        <div class="algorithm-block">
-          <div class="label">Solution</div>
-          <div class="algorithm" id="case-algorithm">Algorithm hidden</div>
-        </div>
-        <p class="muted" id="trainer-note">Try to recognize the pattern before revealing the algorithm.</p>
-        <div class="field" style="margin-top:12px;">
-          <label for="trainer-case">Browse cases</label>
-          <select id="trainer-case"></select>
-        </div>
-      </div>
-    </div>
-    <p class="muted">
-      Reference diagrams and full case collections:
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/oll-algorithms.pdf" target="_blank" rel="noopener">OLL</a> ·
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/pll-algorithms.pdf" target="_blank" rel="noopener">PLL</a> ·
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/f2l.pdf" target="_blank" rel="noopener">F2L</a>
-    </p>
-  </div>
-</section>
-
 <section class="page" id="settings-page">
   <div class="card">
     <h2>Cube Settings</h2>
@@ -437,7 +373,7 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
       <div><strong>Restore defaults</strong><div class="muted">Reset the app layout and timer behavior.</div></div>
       <button id="restore-defaults">Restore</button>
     </div>
-    <div class="shortcuts-box" id="shortcut-help">
+    <div class="shortcuts-box" id="shortcut-help" hidden>
       <strong>Shortcuts</strong><br>
       <div><code>Space</code> = start/hold/stop timer</div>
       <div><code>N</code> = new scramble</div>
