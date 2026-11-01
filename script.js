@@ -14,7 +14,10 @@ const DEFAULT_SETTINGS = {
   animationSpeed: 260,
   inspection: false,
   confetti: true,
-  precision: 2
+  precision: 2,
+  theme: "dark",
+  layout: "standard",
+  dailyGoal: 20
 };
 
 let settings = loadSettings();
@@ -119,24 +122,69 @@ function newScramble() {
 }
 
 /* =========================================================
-   TIMER
+   TIMER AND 15-SECOND INSPECTION
 ========================================================= */
 
-function updateTimer() {
-  if (!running) return;
+let inspecting = false;
+let inspectionStart = 0;
+let timerInputHeld = false;
+let timerTouchHeld = false;
 
-  $("timer").textContent = formatTime(
-    performance.now() - startTime
-  );
+function updateTimer() {
+  if (inspecting) {
+    const elapsed = (performance.now() - inspectionStart) / 1000;
+    const remaining = Math.max(0, 15 - elapsed);
+
+    $("timer").textContent = String(Math.ceil(remaining));
+    $("timer-label").textContent = remaining <= 3
+      ? "INSPECTION ENDING" : "INSPECTION";
+
+    if (remaining <= 0) {
+      inspecting = false;
+      ready = false;
+      $("timer").textContent = "0";
+      $("timer").className = "";
+      $("timer-label").textContent =
+        "Inspection finished. Press to start.";
+      return;
+    }
+  } else if (running) {
+    $("timer").textContent =
+      formatTime(performance.now() - startTime);
+  } else {
+    return;
+  }
 
   animationFrame = requestAnimationFrame(updateTimer);
+}
+
+function beginInspection() {
+  if (running || inspecting) return;
+
+  if (!settings.inspection) {
+    startTimer();
+    return;
+  }
+
+  ready = false;
+  inspecting = true;
+  inspectionStart = performance.now();
+
+  $("timer").className = "ready";
+  $("timer-label").textContent = "INSPECTION";
+
+  updateTimer();
 }
 
 function startTimer() {
   if (running) return;
 
-  running = true;
+  inspecting = false;
   ready = false;
+
+  cancelAnimationFrame(animationFrame);
+
+  running = true;
   startTime = performance.now();
 
   $("timer").className = "running";
@@ -160,25 +208,45 @@ function stopTimer() {
   addSolve(elapsed, scramble);
 
   setTimeout(() => {
-    if (!$("timer-label")) return;
+    if (!running && !inspecting) {
+      if (!$("timer-label").textContent.includes("PERSONAL BEST")) {
+        $("timer-label").textContent =
+          "Hold SPACE, then release to start";
+      }
 
-    if (!$("timer-label").textContent.includes("PERSONAL BEST")) {
-      $("timer-label").textContent =
-        "Hold SPACE, then release to start";
+      newScramble();
     }
-
-    newScramble();
   }, 1200);
 }
 
 function prepareTimer() {
-  if (running || ready) return;
+  if (running || inspecting || ready) return;
 
   ready = true;
-
   $("timer").textContent = "0.00";
   $("timer").className = "ready";
   $("timer-label").textContent = "READY";
+}
+
+function timerPress() {
+  if (running) {
+    stopTimer();
+    return;
+  }
+
+  if (inspecting) {
+    startTimer();
+    return;
+  }
+
+  prepareTimer();
+}
+
+function timerRelease() {
+  if (running || !ready) return;
+
+  ready = false;
+  beginInspection();
 }
 
 document.addEventListener("keydown", event => {
@@ -191,110 +259,49 @@ document.addEventListener("keydown", event => {
 
   event.preventDefault();
 
-  if (event.repeat) return;
+  if (event.repeat || timerInputHeld) return;
 
-  if (running) {
-    stopTimer();
-    return;
-  }
-
-  if (spaceHeld) return;
-
-  spaceHeld = true;
-  prepareTimer();
-
-  holdTimeout = setTimeout(() => {
-    if (spaceHeld && ready) {
-      $("timer-label").textContent = "RELEASE TO START";
-    }
-  }, 300);
+  timerInputHeld = true;
+  timerPress();
 });
 
 document.addEventListener("keyup", event => {
-  if (event.code !== "Space" || !spaceHeld) return;
+  if (event.code !== "Space" || !timerInputHeld) return;
 
-  spaceHeld = false;
-  clearTimeout(holdTimeout);
-
-  if (ready && !running) {
-    startTimer();
-  }
+  timerInputHeld = false;
+  timerRelease();
 });
 
 window.addEventListener("blur", () => {
-  spaceHeld = false;
-  clearTimeout(holdTimeout);
+  timerInputHeld = false;
+  timerTouchHeld = false;
 });
 
-/* =========================================================
-   CONFETTI
-========================================================= */
+const timerElement = $("timer");
 
-function celebratePB() {
-  if (!settings.confetti) return;
+timerElement.addEventListener("pointerdown", event => {
+  if (event.pointerType === "mouse" && event.button !== 0) return;
 
-  const canvas = $("confetti");
-  const ctx = canvas.getContext("2d");
-  const dpr = window.devicePixelRatio || 1;
+  event.preventDefault();
 
-  canvas.width = innerWidth * dpr;
-  canvas.height = innerHeight * dpr;
+  if (timerTouchHeld) return;
 
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  timerTouchHeld = true;
+  timerElement.setPointerCapture(event.pointerId);
 
-  const colors = [
-    "#70e1c1",
-    "#e6bd69",
-    "#83aaff",
-    "#ef8aab",
-    "#ffffff"
-  ];
+  timerPress();
+});
 
-  const pieces = Array.from({ length: 150 }, () => ({
-    x: Math.random() * innerWidth,
-    y: -20 - Math.random() * innerHeight,
-    size: 4 + Math.random() * 7,
-    speed: 2 + Math.random() * 5,
-    drift: (Math.random() - 0.5) * 3,
-    angle: Math.random() * 6,
-    spin: (Math.random() - 0.5) * 0.15,
-    color: colors[Math.floor(Math.random() * colors.length)]
-  }));
+timerElement.addEventListener("pointerup", () => {
+  if (!timerTouchHeld) return;
 
-  let frame = 0;
+  timerTouchHeld = false;
+  timerRelease();
+});
 
-  function draw() {
-    ctx.clearRect(0, 0, innerWidth, innerHeight);
-
-    pieces.forEach(p => {
-      p.y += p.speed;
-      p.x += p.drift;
-      p.angle += p.spin;
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.angle);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(
-        -p.size / 2,
-        -p.size / 2,
-        p.size,
-        p.size * 0.65
-      );
-      ctx.restore();
-    });
-
-    frame++;
-
-    if (frame < 180) {
-      requestAnimationFrame(draw);
-    } else {
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
-    }
-  }
-
-  draw();
-}
+timerElement.addEventListener("pointercancel", () => {
+  timerTouchHeld = false;
+});
 
 /* =========================================================
    SOLVE MANAGEMENT
@@ -801,7 +808,65 @@ function renderHistory() {
   });
 }
 
+/* =========================================================
+   THEMES, LAYOUT AND DAILY GOALS
+========================================================= */
+
+function applyTheme() {
+  document.documentElement.dataset.theme =
+    settings.theme === "light" ? "light" : "dark";
+}
+
+function applyLayout() {
+  const card = document.querySelector(".timer-card");
+  if (!card) return;
+
+  card.classList.remove("minimal", "statistics-focused");
+
+  if (settings.layout === "minimal") {
+    card.classList.add("minimal");
+  }
+
+  if (settings.layout === "statistics") {
+    card.classList.add("statistics-focused");
+  }
+}
+
+function getTodaySolves() {
+  const today = new Date().toLocaleDateString();
+
+  return solves.filter(s =>
+    new Date(s.date).toLocaleDateString() === today
+  ).length;
+}
+
+function renderPracticeGoal() {
+  const goal = Math.max(
+    0,
+    Math.min(1000, Number(settings.dailyGoal) || 0)
+  );
+
+  const count = getTodaySolves();
+
+  $("goal-progress-text").textContent =
+    goal === 0
+      ? `${count} solves today`
+      : `${count} / ${goal} solves`;
+
+  $("goal-progress").max = Math.max(goal, 1);
+  $("goal-progress").value =
+    goal === 0 ? 0 : Math.min(count, goal);
+
+  $("goal-remaining").textContent =
+    goal === 0
+      ? "Daily goal disabled"
+      : count >= goal
+        ? "Daily goal completed!"
+        : `${goal - count} solves remaining today`;
+}
+
 function render() {
+  renderPracticeGoal();
   renderStats();
   renderHistory();
   renderRecords();
@@ -938,6 +1003,36 @@ function initializeSettings() {
   $("setting-inspection").checked = settings.inspection;
   $("setting-confetti").checked = settings.confetti;
   $("setting-precision").value = settings.precision;
+
+  $("setting-theme").value = settings.theme || "dark";
+  $("setting-layout").value = settings.layout || "standard";
+  $("setting-daily-goal").value = settings.dailyGoal ?? 20;
+
+  applyTheme();
+  applyLayout();
+
+  $("setting-theme").addEventListener("change", event => {
+    settings.theme = event.target.value;
+    saveSettings();
+    applyTheme();
+  });
+
+  $("setting-layout").addEventListener("change", event => {
+    settings.layout = event.target.value;
+    saveSettings();
+    applyLayout();
+  });
+
+  $("setting-daily-goal").addEventListener("change", event => {
+    settings.dailyGoal = Math.max(
+      0,
+      Math.min(1000, Number(event.target.value) || 0)
+    );
+
+    event.target.value = settings.dailyGoal;
+    saveSettings();
+    renderPracticeGoal();
+  });
 
   $("setting-cube-size").addEventListener("change", event => {
     settings.cubeSize = Number(event.target.value);
