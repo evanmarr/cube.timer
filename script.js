@@ -49,10 +49,10 @@ const BADGES = [
 ];
 
 const TRAINER_CASES = [
-  { category: "OLL", group: "Dot", number: "1", name: "Dot OLL", probability: "1/54", description: "The dot pattern with no faces solved.", recognition: "Look for the center dot and uneven edge orientations.", algorithm: "R U2 R' U' R U' R'" },
-  { category: "OLL", group: "CMLL", number: "2", name: "CMLL 2", probability: "1/54", description: "A simple corner and edge orientation pattern.", recognition: "The top face is nearly solved with one asymmetric corner.", algorithm: "R U R' U' R' F R2 U' R' U' R U R' F'" },
+  { category: "OLL", group: "Dot", number: "1", name: "Dot OLL", probability: "1/54", description: "The dot pattern with no faces solved.", recognition: "Look for the center dot and uneven edge orientation on the top layer.", algorithm: "R U2 R' U' R U' R'" },
+  { category: "OLL", group: "CMLL", number: "2", name: "CMLL 2", probability: "1/54", description: "A simple corner and edge orientation pattern.", recognition: "The top face is nearly solved with one asymmetrical shape.", algorithm: "R U R' U' R' F R F'" },
   { category: "PLL", group: "Adjacent", number: "A", name: "A Perm", probability: "1/18", description: "Adjacent corner swap.", recognition: "Two corners are swapped on the top face.", algorithm: "x L2 D2 L' U' L D2 L' U L'" },
-  { category: "F2L", group: "1", number: "1", name: "F2L 1", probability: "1/5", description: "A basic first-layer pair insertion.", recognition: "One corner and edge are already paired together.", algorithm: "R U R' U'" }
+  { category: "F2L", group: "1", number: "1", name: "F2L 1", probability: "1/5", description: "A basic first-layer pair insertion.", recognition: "One corner and edge are already paired together.", algorithm: "U R U' R'" }
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -161,6 +161,7 @@ function applyTheme() {
 }
 
 function applyLayout() {
+  document.body.dataset.layoutPreset = settings.layoutPreset || "classic";
   const scrambleEl = $("scramble");
   if (scrambleEl) scrambleEl.style.display = settings.showScramble ? "block" : "none";
 
@@ -414,6 +415,7 @@ function showToast(message) {
 function celebratePB() {
   if (!settings.confetti) return;
   const canvas = $("confetti");
+  if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const colors = ["#70e1c1", "#e6bd69", "#83aaff", "#ef8aab", "#ffffff"];
   const pieces = Array.from({ length: 160 }, () => ({
@@ -505,9 +507,9 @@ function getAverageForN(n) {
   return trimmedAverage(latest);
 }
 
-function rollingAverage(n) {
-  if (solves.length < n) return [];
-  const ordered = [...solves].reverse();
+function rollingAverage(n, list = solves) {
+  if (!Array.isArray(list) || list.length < n) return [];
+  const ordered = [...list].reverse();
   const result = [];
   for (let start = n - 1; start < ordered.length; start++) {
     const slice = ordered.slice(start - n + 1, start + 1);
@@ -517,18 +519,27 @@ function rollingAverage(n) {
   return result;
 }
 
-function getAverageByRange(range) {
-  if (!solves.length) return null;
-  const start = new Date();
+function filterSolvesByRange(list, range) {
+  if (!Array.isArray(list) || !list.length) return [];
+  if (range === "all") return [...list];
+  const now = new Date();
+  const cutoff = new Date(now);
+
   switch (range) {
-    case "7": start.setDate(start.getDate() - 7); break;
-    case "30": start.setDate(start.getDate() - 30); break;
-    case "90": start.setDate(start.getDate() - 90); break;
-    case "365": start.setDate(start.getDate() - 365); break;
-    default: return null;
+    case "7": cutoff.setDate(cutoff.getDate() - 7); break;
+    case "30": cutoff.setDate(cutoff.getDate() - 30); break;
+    case "90": cutoff.setDate(cutoff.getDate() - 90); break;
+    case "365": cutoff.setFullYear(cutoff.getFullYear() - 1); break;
+    default: return [...list];
   }
-  const filtered = solves.filter((solve) => new Date(solve.date) >= start);
-  return filtered.length ? filtered.reduce((sum, solve) => sum + solve.time, 0) / filtered.length : null;
+
+  return list.filter((solve) => new Date(solve.date) >= cutoff);
+}
+
+function getAverageByRange(range) {
+  const filtered = filterSolvesByRange(solves, range);
+  if (!filtered.length) return null;
+  return filtered.reduce((sum, solve) => sum + solve.time, 0) / filtered.length;
 }
 
 function drawLineGraph(canvasId, datasets, emptyMessage) {
@@ -590,8 +601,9 @@ function drawLineGraph(canvasId, datasets, emptyMessage) {
 
 function drawTrendGraph() {
   const range = $("progress-range")?.value || "7";
-  const vals = rollingAverage(5).map((value) => value / 1000);
-  const vals12 = rollingAverage(12).map((value) => value / 1000);
+  const filtered = filterSolvesByRange(solves, range);
+  const vals = rollingAverage(5, filtered).map((value) => value / 1000);
+  const vals12 = rollingAverage(12, filtered).map((value) => value / 1000);
   drawLineGraph("trendGraph", [
     { values: vals, color: "#70e1c1" },
     { values: vals12, color: "#e6bd69" }
@@ -599,7 +611,9 @@ function drawTrendGraph() {
 }
 
 function drawGraph() {
-  const values = [...solves].reverse().map((solve) => solve.time / 1000);
+  const range = $("progress-range")?.value || "7";
+  const filtered = filterSolvesByRange(solves, range);
+  const values = [...filtered].reverse().map((solve) => solve.time / 1000);
   drawLineGraph("graph", [{ values, color: "#70e1c1" }], "Complete a solve to begin your graph");
 }
 
@@ -778,7 +792,7 @@ function renderStats() {
   $("avg-solve").textContent = avg === null ? "--" : formatTime(avg);
 
   const recentAverage = getAverageByRange($("progress-range")?.value || "7");
-  $("progress-rate").textContent = recentAverage === null ? "--" : `${recentAverage.toFixed(2)}s avg`;
+  $("progress-rate").textContent = recentAverage === null ? "--" : `${(recentAverage / 1000).toFixed(2)}s avg`;
 }
 
 function updateGoalStats() {
@@ -846,7 +860,10 @@ function updateAllMilestones() {
     if (check() && !unlockedMilestones[key]) {
       unlockedMilestones[key] = now;
       const meta = MILESTONE_DEFS.find((entry) => entry.key === key);
-      if (meta) showToast(`Milestone: ${meta.name}`);
+      if (meta) {
+        if (key === "pb") celebratePB();
+        showToast(`Milestone: ${meta.name}`);
+      }
     }
   });
 
@@ -1551,3 +1568,4 @@ window.addEventListener("load", () => {
   if (!cubeInitialized) createCube();
   resizeCubeRenderer();
 });
+
