@@ -12,37 +12,40 @@
   --gold:#e6bd69; --border:#303a4b; --red:#e77979;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 button,input,select,textarea{font:inherit}
 button,select{
   cursor:pointer;border:1px solid var(--border);background:var(--panel2);
-  color:var(--text);padding:10px 14px;border-radius:10px;transition:.18s
+  color:var(--text);padding:10px 14px;border-radius:10px;transition:.18s;
+  min-height:44px;touch-action:manipulation
 }
 button:hover,select:hover{border-color:var(--accent);transform:translateY(-1px)}
 button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+button:active,select:active,input:active,textarea:active{transform:translateY(0)}
 select{
   appearance:none;padding-right:38px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2370e1c1' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 13px center
 }
 select option{background:#191f2c;color:var(--text)}
-input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0}
+input,textarea{background:var(--panel2);color:var(--text);border:1px solid var(--border);padding:10px;border-radius:9px;min-width:0;min-height:44px}
 textarea{width:100%;resize:vertical;min-height:85px}
 header{display:flex;justify-content:space-between;align-items:center;padding:18px 5%;border-bottom:1px solid var(--border);gap:12px}
 header h1{margin:0;font-size:23px;letter-spacing:-1px}
 header span{color:var(--accent)}
 main{max-width:1200px;margin:auto;padding:24px 20px 60px}
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
-.tab{background:transparent;color:var(--muted)}
+.tab{background:transparent;color:var(--muted);min-height:42px;padding:10px 14px}
 .tab.active{background:var(--panel2);color:var(--accent);border-color:var(--accent)}
 .page{display:none}.page.active{display:block}
 .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px;min-width:0}
 .card h2{font-size:17px;margin:0 0 17px}
-.timer-card{text-align:center;padding:30px 20px}
-#timer{font-size:clamp(65px,12vw,110px);font-weight:800;letter-spacing:-5px;font-variant-numeric:tabular-nums;margin:20px 0}
+.timer-card{text-align:center;padding:30px 20px;touch-action:manipulation}
+#timer{font-size:clamp(65px,12vw,110px);font-weight:800;letter-spacing:-5px;font-variant-numeric:tabular-nums;margin:20px 0;user-select:none;-webkit-user-select:none}
 #timer.ready{color:var(--accent)}#timer.running{color:var(--gold)}
 .label,.muted{color:var(--muted);font-size:12px}
-.scramble{font-size:clamp(16px,3vw,23px);line-height:1.8;letter-spacing:2px;margin:18px auto;max-width:850px;overflow-wrap:anywhere}
+.scramble{font-size:clamp(16px,3vw,23px);line-height:1.8;letter-spacing:2px;margin:18px auto;max-width:850px;overflow-wrap:anywhere;user-select:none;-webkit-user-select:none}
 .controls,.form-row{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;margin-top:15px}
 .stats,.records{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
 .stat,.record-item{background:var(--panel2);padding:15px;border-radius:11px;min-width:0}
@@ -53,7 +56,7 @@ canvas.graph{width:100%;height:100%;display:block}
 .solve-list{display:flex;flex-direction:column;gap:8px}
 .solve{display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:12px;background:var(--panel2);padding:12px;border-radius:10px}
 .solve-time{font-size:17px;font-weight:700}.solve-date{font-size:11px;color:var(--muted)}
-.solve-actions{display:flex;gap:5px}.solve-actions button{padding:6px 9px;font-size:12px}
+.solve-actions{display:flex;gap:5px}.solve-actions button{padding:6px 9px;font-size:12px;min-height:36px}
 .calendar-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-top:15px}
 .calendar-day{aspect-ratio:1;border-radius:4px;background:#252d3b}
 .calendar-day[data-level="1"]{background:#315b53}
@@ -68,16 +71,8 @@ canvas.graph{width:100%;height:100%;display:block}
 #cube-stage{height:390px;min-width:0;background:radial-gradient(ellipse,#263347,#121925 70%);border:1px solid var(--border);border-radius:13px;overflow:hidden;touch-action:none}
 #cube-stage canvas{display:block;width:100%;height:100%}
 .move-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
-.move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace}
+.move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace;min-height:32px;display:inline-flex;align-items:center}
 .move-chip.current{outline:1px solid var(--accent);color:var(--accent)}
-.trainer-layout{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(270px,1.2fr);gap:20px;align-items:center}
-.case-image{background:#111722;border:1px solid var(--border);border-radius:13px;min-height:230px;display:grid;place-items:center;padding:15px}
-.case-image svg{width:min(100%,320px);height:auto;display:block}
-.algorithm{font-family:monospace;font-size:19px;line-height:1.8;color:var(--accent);overflow-wrap:anywhere}
-.algorithm-block{margin-top:14px;padding:10px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:10px}
-.case-meta{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
-.meta-pill{background:var(--panel2);border:1px solid var(--border);color:var(--muted);padding:5px 8px;border-radius:999px;font-size:11px}
-.case-recognition{margin-top:8px;line-height:1.6;color:var(--text)}
 .field{display:grid;gap:7px;margin:12px 0;min-width:0}
 .field label{color:var(--muted);font-size:12px}
 .field input,.field select{width:100%}
@@ -87,7 +82,7 @@ canvas.graph{width:100%;height:100%;display:block}
 #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
 @media(max-width:760px){
-  .two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}
+  .two-col,.sim-layout{grid-template-columns:1fr}
   #cube-stage{height:320px}
 }
 @media(max-width:520px){
@@ -98,6 +93,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   .calendar-grid{gap:3px}
   header{padding:16px}
   header .label{display:none}
+  button,select,input,textarea{min-height:46px}
+  .tab{padding:9px 12px}
 }
 </style>
 </head>
@@ -116,7 +113,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   <button class="tab" data-page="history-page">History</button>
   <button class="tab" data-page="records-page">Records</button>
   <button class="tab" data-page="sim-page">3D Simulator</button>
-  <button class="tab" data-page="trainer-page">Algorithm Trainer</button>
   <button class="tab" data-page="settings-page">Cube Settings</button>
 </nav>
 
@@ -233,61 +229,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
         <div class="move-list" id="sim-moves"></div>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="page" id="trainer-page">
-  <div class="card">
-    <h2>Algorithm Trainer</h2>
-    <p class="muted">Study a case, recognize the pattern, and practice the solution algorithm.</p>
-    <div class="controls" style="justify-content:flex-start; margin-top:0;">
-      <label class="label" for="trainer-category">Category</label>
-      <select id="trainer-category">
-        <option value="OLL">OLL</option>
-        <option value="PLL">PLL</option>
-        <option value="F2L">F2L</option>
-      </select>
-      <label class="label" for="trainer-group">Group</label>
-      <select id="trainer-group">
-        <option value="all">All groups</option>
-      </select>
-      <input id="trainer-search" type="search" placeholder="Search by name, number, or algorithm" aria-label="Search trainer cases" style="min-width:220px; flex:1; max-width:420px;">
-    </div>
-    <div class="controls" style="justify-content:flex-start; margin-top:12px;">
-      <button id="prev-case">Previous</button>
-      <button id="next-case">Next</button>
-      <button id="random-case">Random</button>
-      <button id="show-algorithm">Show algorithm</button>
-      <button id="practice-case">Send to simulator</button>
-    </div>
-    <div class="trainer-layout" style="margin-top:22px">
-      <div class="case-image" id="case-image"></div>
-      <div>
-        <h2 id="case-title">OLL Case</h2>
-        <div class="case-meta">
-          <span class="meta-pill" id="case-number">Case #</span>
-          <span class="meta-pill" id="case-group">Group</span>
-          <span class="meta-pill" id="case-probability">Probability</span>
-        </div>
-        <p id="case-description" class="muted"></p>
-        <p id="case-recognition" class="case-recognition"></p>
-        <div class="algorithm-block">
-          <div class="label">Solution</div>
-          <div class="algorithm" id="case-algorithm">Algorithm hidden</div>
-        </div>
-        <p class="muted" id="trainer-note">Try to recognize the pattern before revealing the algorithm.</p>
-        <div class="field" style="margin-top:12px;">
-          <label for="trainer-case">Browse cases</label>
-          <select id="trainer-case"></select>
-        </div>
-      </div>
-    </div>
-    <p class="muted">
-      Reference diagrams and full case collections:
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/oll-algorithms.pdf" target="_blank" rel="noopener">OLL</a> ·
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/pll-algorithms.pdf" target="_blank" rel="noopener">PLL</a> ·
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/f2l.pdf" target="_blank" rel="noopener">F2L</a>
-    </p>
   </div>
 </section>
 
