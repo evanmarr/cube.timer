@@ -70,7 +70,6 @@ canvas.graph{width:100%;height:100%;display:block}
 .move-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
 .move-chip{padding:6px 9px;border-radius:7px;background:var(--panel2);font-family:monospace}
 .move-chip.current{outline:1px solid var(--accent);color:var(--accent)}
-.trainer-layout{display:grid;grid-template-columns:minmax(200px,.8fr) minmax(250px,1.2fr);gap:20px;align-items:center}
 .case-image{background:#111722;border:1px solid var(--border);border-radius:13px;min-height:230px;display:grid;place-items:center;padding:15px}
 .case-image svg{width:min(100%,280px);height:auto}
 .algorithm{font-family:monospace;font-size:19px;line-height:1.8;color:var(--accent);overflow-wrap:anywhere}
@@ -84,7 +83,7 @@ canvas.graph{width:100%;height:100%;display:block}
 #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
 @media(max-width:760px){
-  .two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}
+  .two-col,.sim-layout{grid-template-columns:1fr}
   #cube-stage{height:320px}
 }
 @media(max-width:520px){
@@ -96,6 +95,25 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   header{padding:16px}
   header .label{display:none}
 }
+
+:root[data-theme="light"] {
+  --bg:#f3f5f9; --panel:#ffffff; --panel2:#e8edf4;
+  --text:#182231; --muted:#647187; --accent:#087f68;
+  --gold:#a66b00; --border:#ccd4df; --red:#c43f49;
+}
+:root[data-theme="light"] select option {background:#fff;color:#182231}
+:root[data-theme="light"] #cube-stage {background:radial-gradient(ellipse,#e1e8f1,#cbd5e2 70%)}
+:root[data-theme="light"] .case-image {background:#e8edf4}
+#timer {user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#timer.ready {color:var(--accent)}
+.timer-card.minimal #scramble,
+.timer-card.minimal #timer-label,
+.timer-card.minimal > .label,
+.timer-card.minimal > p {display:none}
+.timer-card.minimal {padding:12px 20px}
+.timer-card.statistics-focused {padding-bottom:14px}
+#practice-goal-card progress {width:100%;height:18px;accent-color:var(--accent)}
+@media(max-width:600px){button,select{min-height:44px}.controls button{flex:1 1 auto}}
 </style>
 </head>
 <body>
@@ -113,7 +131,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   <button class="tab" data-page="history-page">History</button>
   <button class="tab" data-page="records-page">Records</button>
   <button class="tab" data-page="sim-page">3D Simulator</button>
-  <button class="tab" data-page="trainer-page">Algorithm Trainer</button>
   <button class="tab" data-page="settings-page">Cube Settings</button>
 </nav>
 
@@ -128,6 +145,12 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
       <button id="manual-add">Add Solve</button>
     </div>
     <p class="muted">Hold SPACE to prepare. Release to start. Press SPACE again to stop.</p>
+  </div>
+  <div class="card" id="practice-goal-card">
+    <h2>Daily Practice Goal</h2>
+    <div id="goal-progress-text">0 / 20 solves</div>
+    <progress id="goal-progress" value="0" max="20"></progress>
+    <p class="muted" id="goal-remaining">20 solves remaining today</p>
   </div>
   <div class="card">
     <h2>Session Statistics</h2>
@@ -233,43 +256,6 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
   </div>
 </section>
 
-<section class="page" id="trainer-page">
-  <div class="card">
-    <h2>Algorithm Trainer</h2>
-    <p class="muted">Study a case, recognize its pattern, and practice its algorithm.</p>
-    <div class="controls">
-      <label class="label" for="trainer-category">Category</label>
-      <select id="trainer-category">
-        <option value="OLL">OLL</option>
-        <option value="PLL">PLL</option>
-        <option value="F2L">F2L</option>
-      </select>
-      <label class="label" for="trainer-case">Case</label>
-      <select id="trainer-case"></select>
-    </div>
-    <div class="trainer-layout" style="margin-top:20px">
-      <div class="case-image" id="case-image"></div>
-      <div>
-        <h2 id="case-title">OLL Case</h2>
-        <p id="case-description" class="muted"></p>
-        <div class="algorithm" id="case-algorithm"></div>
-        <div class="controls">
-          <button id="show-algorithm">Show Algorithm</button>
-          <button id="next-case">Next Case</button>
-          <button id="practice-case">Send to Simulator</button>
-        </div>
-        <p class="muted" id="trainer-note">Try to recognize the pattern before revealing the algorithm.</p>
-      </div>
-    </div>
-    <p class="muted">
-      Reference diagrams and full case collections:
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/oll-algorithms.pdf" target="_blank" rel="noopener">OLL</a> ·
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/pll-algorithms.pdf" target="_blank" rel="noopener">PLL</a> ·
-      <a href="https://www.cubeskills.com/uploads/pdf/tutorials/f2l.pdf" target="_blank" rel="noopener">F2L</a>
-    </p>
-  </div>
-</section>
-
 <section class="page" id="settings-page">
   <div class="card">
     <h2>Cube Settings</h2>
@@ -280,6 +266,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
         <option value="2">2×2</option>
         <option value="4">4×4</option>
         <option value="5">5×5</option>
+        <option value="6">6×6</option><option value="7">7×7</option>
+        <option value="8">8×8</option><option value="9">9×9</option>
+        <option value="pyraminx">Pyraminx</option>
+        <option value="megaminx">Megaminx</option>
       </select>
     </div>
     <div class="setting-row">
@@ -292,11 +282,11 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
     </div>
     <div class="setting-row">
       <div><strong>Timer inspection</strong><div class="muted">Enable a 15-second inspection period.</div></div>
-      <input type="checkbox" id="setting-inspection">
+      <input class="custom-check" type="checkbox" id="setting-inspection">
     </div>
     <div class="setting-row">
       <div><strong>Confetti on personal best</strong><div class="muted">Celebrate a new best single.</div></div>
-      <input type="checkbox" id="setting-confetti" checked>
+      <input class="custom-check" type="checkbox" id="setting-confetti" checked>
     </div>
     <div class="setting-row">
       <div><strong>Timer precision</strong><div class="muted">Choose the displayed decimal precision.</div></div>
@@ -305,10 +295,37 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
         <option value="3">Thousandths</option>
       </select>
     </div>
+    <div class="setting-row">
+      <div><strong>Theme</strong><div class="muted">Choose your appearance.</div></div>
+      <select id="setting-theme"><option value="dark">Dark</option><option value="light">Light</option></select>
+    </div>
+    <div class="setting-row">
+      <div><strong>Timer layout</strong><div class="muted">Choose the timer display.</div></div>
+      <select id="setting-layout">
+        <option value="standard">Standard</option>
+        <option value="minimal">Minimal</option>
+        <option value="statistics">Statistics focused</option>
+      </select>
+    </div>
+    <div class="setting-row">
+      <div><strong>Daily solve goal</strong><div class="muted">Solves to complete each day. Set 0 to disable.</div></div>
+      <input id="setting-daily-goal" type="number" min="0" max="1000" value="20" style="width:90px">
+    </div>
+    <div class="card" style="margin-top:18px;background:var(--panel2)">
+      <h2>Achievements</h2><div id="achievements" class="stats"></div>
+    </div>
     <p class="muted">Settings are stored in this browser.</p>
   </div>
 </section>
 </main>
+
+<div id="app-dialog" class="dialog-backdrop" hidden>
+  <section class="dialog-box" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
+    <h2 id="dialog-title">Cube.Timer</h2><p id="dialog-message"></p>
+    <input id="dialog-input" type="text" hidden>
+    <div class="dialog-actions"><button id="dialog-cancel" type="button">Cancel</button><button id="dialog-ok" type="button">OK</button></div>
+  </section>
+</div>
 
 <footer>Cube.Timer · Your solves are saved in this browser.</footer>
 <script src="script.js"></script>
