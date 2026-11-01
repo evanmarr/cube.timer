@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cube-timer-v1';
+const CACHE_NAME = 'cube-timer-v2';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -34,5 +34,11 @@ self.addEventListener('fetch', (event) => {
         .catch(() => caches.match('./index.html'));
     })
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 

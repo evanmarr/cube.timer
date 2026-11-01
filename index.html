@@ -109,6 +109,8 @@ body[data-layout-preset="compact"] .scramble{letter-spacing:1.4px}
 body[data-layout-preset="focus"] .tabs{justify-content:center}
 body[data-layout-preset="focus"] .card{box-shadow:0 0 0 1px rgba(112,225,193,.12)}
 body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32px}
+.shortcuts-box{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:11px;background:var(--panel2);color:var(--text)}
+.shortcuts-box code{font-family:ui-monospace, SFMono-Regular, Menlo, monospace;color:var(--accent)}
 @media(max-width:760px){
   .two-col,.sim-layout,.trainer-layout{grid-template-columns:1fr}
   #cube-stage{height:320px}
@@ -430,6 +432,17 @@ body[data-layout-preset="focus"] .timer-card{padding-top:32px;padding-bottom:32p
     <div class="setting-row">
       <div><strong>Keyboard shortcuts</strong><div class="muted">Check the available timer controls.</div></div>
       <button id="toggle-shortcuts">View shortcuts</button>
+    </div>
+    <div class="setting-row">
+      <div><strong>Restore defaults</strong><div class="muted">Reset the app layout and timer behavior.</div></div>
+      <button id="restore-defaults">Restore</button>
+    </div>
+    <div class="shortcuts-box" id="shortcut-help">
+      <strong>Shortcuts</strong><br>
+      <div><code>Space</code> = start/hold/stop timer</div>
+      <div><code>N</code> = new scramble</div>
+      <div><code>M</code> = manual add</div>
+      <div><code>R</code> = reset timer</div>
     </div>
     <p class="muted">Settings are stored in this browser.</p>
   </div>
